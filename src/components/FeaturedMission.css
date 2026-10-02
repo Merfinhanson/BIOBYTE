@@ -1,0 +1,160 @@
+/* Featured mission card — the one highlight under the hero */
+
+.featured {
+  position: relative;
+  z-index: 3;
+  padding-top: clamp(34px, 5vw, 60px);
+}
+
+.featured-shell {
+  padding: clamp(20px, 3vw, 30px);
+  background: linear-gradient(
+    168deg,
+    color-mix(in srgb, var(--color-main-green) 7%, var(--color-card-dark)),
+    var(--color-bg) 72%
+  );
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg), 0 0 60px -34px var(--color-main-green);
+}
+
+/* ---- Head ---- */
+
+.featured-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed var(--color-border);
+}
+
+.featured-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-main-green);
+  background: var(--green-08);
+  border: 1px solid var(--green-30);
+  border-radius: 999px;
+}
+
+.featured-meta {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+/* ---- Body ---- */
+
+.featured-body {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: clamp(18px, 3vw, 34px);
+  align-items: start;
+  padding-block: 22px;
+}
+
+.featured-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2.2rem, 6vw, 3.6rem);
+  line-height: 0.96;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.featured-year {
+  color: var(--color-main-green);
+}
+
+.featured-line {
+  margin-top: 8px;
+  font-family: var(--font-heading);
+  font-size: clamp(1.05rem, 2.4vw, 1.4rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-glow-green);
+}
+
+.featured-blurb {
+  margin-top: 10px;
+  max-width: 54ch;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: var(--text-dim);
+}
+
+.featured-venue {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 7px 13px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-accent-orange);
+  background: var(--orange-14);
+  border: 1px solid var(--orange-40);
+  border-radius: 999px;
+}
+
+/* ---- Countdown ---- */
+
+.featured-clock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.featured-clock-key {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+/* ---- Actions ---- */
+
+.featured-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--color-border);
+}
+
+.featured-actions .btn {
+  margin: 0;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 860px) {
+  .featured-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .featured-shell {
+    transition: none !important;
+  }
+}

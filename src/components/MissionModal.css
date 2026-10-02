@@ -1,0 +1,263 @@
+/* ============================================================
+   MISSION FILE — secure statement panel
+   Sits above the page, picks up the alien hue of the open card.
+   ============================================================ */
+
+.mission-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: clamp(14px, 4vw, 32px);
+  background: rgba(4, 6, 3, 0.86);
+  backdrop-filter: blur(6px);
+  animation: overlay-in 260ms var(--ease-out);
+}
+
+.mission-file {
+  --hue: var(--color-main-green);
+  position: relative;
+  width: min(680px, 100%);
+  max-height: min(86vh, 760px);
+  overflow: hidden auto;
+  padding: clamp(20px, 3.4vw, 30px);
+  background: linear-gradient(
+    170deg,
+    color-mix(in srgb, var(--hue) 9%, var(--color-card-dark)),
+    var(--color-bg) 70%
+  );
+  border: 1px solid color-mix(in srgb, var(--hue) 46%, transparent);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg), 0 0 60px -22px var(--hue);
+  animation: file-in 420ms var(--ease-out);
+}
+
+.file-scan {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 34%;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--hue) 11%, transparent),
+    transparent
+  );
+  animation: mission-scan 5.5s linear infinite;
+}
+
+/* ---- Head ---- */
+
+.file-head {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed color-mix(in srgb, var(--hue) 28%, transparent);
+}
+
+.file-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-accent-orange);
+}
+
+.file-code {
+  margin-top: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--hue);
+}
+
+.file-title {
+  margin-top: 6px;
+  padding-right: 44px;
+  font-family: var(--font-heading);
+  font-size: clamp(1.5rem, 3.4vw, 2rem);
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.file-domain {
+  margin-top: 6px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.file-ring {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  width: 34px;
+  height: 34px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.file-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  color: var(--text-dim);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color var(--t-base) var(--ease-out),
+    border-color var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out);
+}
+
+.file-close:hover,
+.file-close:focus-visible {
+  color: var(--hue);
+  border-color: var(--hue);
+  box-shadow: 0 0 16px -6px var(--hue);
+}
+
+/* ---- Body ---- */
+
+.file-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 18px;
+}
+
+.file-subhead {
+  margin-top: 8px;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--hue);
+}
+
+.file-summary {
+  font-size: 0.97rem;
+  line-height: 1.65;
+  color: var(--text-dim);
+}
+
+.file-points {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.file-points li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.93rem;
+  line-height: 1.55;
+  color: var(--text-dim);
+}
+
+/* Was previously scoped to the problem card, which no longer renders points */
+.point-tick {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  margin-top: 8px;
+  background: var(--hue);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--hue);
+}
+
+.file-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.file-tech li {
+  padding: 4px 10px;
+  font-size: 0.71rem;
+  color: var(--text-faint);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.file-foot {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px dashed color-mix(in srgb, var(--hue) 28%, transparent);
+}
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes file-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+}
+
+/* ============================================================
+   RESPONSIVE + ACCESSIBILITY
+   ============================================================ */
+
+@media (max-width: 560px) {
+  .file-title {
+    padding-right: 0;
+  }
+
+  .file-ring {
+    display: none;
+  }
+
+  .file-close {
+    position: static;
+    margin-left: auto;
+  }
+
+  .file-head {
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mission-overlay,
+  .mission-file,
+  .file-scan {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,191 @@
+/* ============================================================
+   CONTACT — Command Center
+   ============================================================ */
+
+.contact-section {
+  border-top: 1px solid var(--green-08);
+}
+
+.command-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(22px, 3vw, 38px);
+  align-items: start;
+}
+
+.command-block {
+  padding: 28px 26px;
+  background: linear-gradient(165deg, #10190a, #0b1108);
+  border: 1px solid var(--green-08);
+  border-radius: var(--radius-md);
+}
+
+.command-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.command-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 14px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-glow-green);
+  background: var(--green-08);
+  border: 1px solid var(--green-14);
+  border-radius: 999px;
+}
+
+.command-badge-amber {
+  color: var(--color-accent-orange);
+  background: var(--orange-14);
+  border-color: var(--orange-40);
+}
+
+.command-title {
+  font-size: 1.28rem;
+  letter-spacing: 0.14em;
+  color: var(--color-text);
+}
+
+/* ---------------------------------------------------------
+   People cards
+   --------------------------------------------------------- */
+
+.people-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.person {
+  position: relative;
+  padding: 20px 22px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.person::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    circle at 0% 0%,
+    rgba(124, 255, 0, 0.16),
+    transparent 62%
+  );
+  transition: opacity var(--t-base) var(--ease-out);
+}
+
+.person:hover::before {
+  opacity: 1;
+}
+
+.person-role {
+  position: relative;
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--color-main-green);
+}
+
+.person-name {
+  position: relative;
+  font-size: 1.06rem;
+  letter-spacing: 0.03em;
+  text-transform: none;
+  color: var(--color-text);
+}
+
+.person-phone {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 7px 13px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-glow-green);
+  background: rgba(7, 10, 5, 0.7);
+  border: 1px solid var(--green-14);
+  border-radius: 999px;
+  transition: border-color var(--t-base) var(--ease-out),
+    color var(--t-base) var(--ease-out), box-shadow var(--t-base) var(--ease-out);
+}
+
+.person-phone:hover {
+  color: var(--color-main-green);
+  border-color: var(--green-50);
+  box-shadow: 0 0 12px -6px var(--green-50);
+}
+
+/* ---------------------------------------------------------
+   Footer note
+   --------------------------------------------------------- */
+
+.command-note {
+  margin-top: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.command-note svg {
+  color: var(--color-main-green);
+  animation: bb-flicker 2.8s steps(1, end) infinite;
+}
+
+/* ---------------------------------------------------------
+   RESPONSIVE
+   --------------------------------------------------------- */
+
+@media (max-width: 940px) {
+  .command-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .command-block {
+    padding: 24px 20px;
+  }
+}
+
+/* ---------------------------------------------------------
+   Contact — deliberately uneven
+   Coordinators carry more weight than convenors, the way a
+   real listing page would be laid out.
+   --------------------------------------------------------- */
+
+.command-grid {
+  grid-template-columns: 1.14fr 1fr;
+  gap: clamp(20px, 2.6vw, 32px);
+  align-items: start;
+}
+
+.command-block {
+  border-radius: var(--radius-md);
+}
+
+.command-note {
+  max-width: 52ch;
+}

@@ -1,0 +1,411 @@
+/* ============================================================
+   HERO — centred Omnitrix mission stage with warped title
+   ============================================================ */
+
+.hero-section {
+  position: relative;
+  min-height: calc(100vh - var(--nav-height));
+  min-height: calc(100svh - var(--nav-height));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: clamp(48px, 6vw, 76px) clamp(92px, 10vw, 124px);
+  overflow: hidden;
+}
+
+/* ---------------------------------------------------------
+   Ambient layers
+   --------------------------------------------------------- */
+
+.hero-waves {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Neon waves are bright; without this the title and chips lose contrast */
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 70% 55% at 50% 42%,
+      rgba(7, 10, 5, 0.82),
+      rgba(7, 10, 5, 0.28) 58%,
+      transparent 78%
+    ),
+    linear-gradient(180deg, rgba(7, 10, 5, 0.55), transparent 34%, rgba(7, 10, 5, 0.7));
+}
+/* HUD corner brackets */
+.hero-frame {
+  position: absolute;
+  inset: clamp(14px, 2.4vw, 30px);
+  pointer-events: none;
+  border: 1px solid var(--green-08);
+  border-radius: var(--radius-lg);
+  mask-image: linear-gradient(180deg, #000 0%, transparent 34%);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 34%);
+}
+
+.hero-frame::before,
+.hero-frame::after {
+  content: "";
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  border: 2px solid var(--color-main-green);
+  opacity: 0.7;
+}
+
+.hero-frame::before {
+  top: -1px;
+  left: -1px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.hero-frame::after {
+  right: -1px;
+  bottom: -1px;
+  border-left: none;
+  border-top: none;
+}
+
+/* ---------------------------------------------------------
+   Layout
+   --------------------------------------------------------- */
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  animation: bb-hero-in 900ms var(--ease-out) both;
+}
+
+@keyframes bb-hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------------------------------------------------------
+   Copy block
+   --------------------------------------------------------- */
+
+.hero-presenter {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-glow-green);
+  background: var(--green-08);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  box-shadow: inset 0 0 18px -10px var(--green-70);
+}
+
+.presenter-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-main-green);
+  box-shadow: 0 0 0 3px var(--green-14);
+  animation: bb-flicker 2.4s steps(1, end) infinite;
+}
+
+/* ---------------------------------------------------------
+   Title stage — neon ring sits behind the warped text
+   --------------------------------------------------------- */
+
+.hero-title-stage {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-block: clamp(14px, 2.4vw, 26px) 0;
+}
+
+.hero-title {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 940px;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.hero-omnitrix {
+  position: absolute;
+  left: 52%;
+  top: 50%;
+  width: min(92%, 440px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.omni-glow {
+  position: absolute;
+  inset: -30%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(124, 255, 0, 0.13),
+    rgba(124, 255, 0, 0.04) 50%,
+    transparent 72%
+  );
+  filter: blur(4px);
+  animation: bb-core-breathe 6.5s var(--ease-in-out) infinite;
+}
+
+/* outer arc ring */
+.omni-ring-1 {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  border-top-color: var(--green-70);
+  border-right-color: var(--green-14);
+  box-shadow: 0 0 10px -7px var(--green-70);
+  animation: bb-spin 19s linear infinite;
+}
+
+/* counter-rotating dashed ring */
+.omni-ring-2 {
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  border: 1px dashed var(--green-30);
+  opacity: 0.4;
+  animation: bb-spin 29s linear infinite reverse;
+}
+
+/* inner containment ring */
+.omni-ring-3 {
+  position: absolute;
+  inset: 30%;
+  border-radius: 50%;
+  border: 1px solid var(--orange-14);
+  opacity: 0.85;
+}
+
+/* slow rotating light sweep */
+.omni-sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(124, 255, 0, 0.06) 52deg,
+    transparent 118deg,
+    transparent 312deg
+  );
+  animation: bb-spin 38s linear infinite;
+}
+
+/* ---------------------------------------------------------
+   Tagline
+   --------------------------------------------------------- */
+
+.hero-tagline {
+  position: relative;
+  z-index: 2;
+  margin-top: clamp(6px, 1.4vw, 14px);
+  font-family: var(--font-heading);
+  font-size: clamp(1.02rem, 3.1vw, 1.62rem);
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--color-glow-green);
+}
+
+.tagline-accent {
+  color: var(--color-accent-orange);
+  text-shadow: none;
+}
+
+.hero-blurb {
+  margin-top: 18px;
+  max-width: 60ch;
+  font-size: 1.06rem;
+  color: var(--text-dim);
+}
+
+.hero-actions {
+  margin-top: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+}
+
+/* ---------------------------------------------------------
+   Info chips
+   --------------------------------------------------------- */
+
+.hero-chips {
+  margin-top: 38px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: 640px;
+}
+
+.hero-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  background: linear-gradient(150deg, rgba(15, 26, 8, 0.9), rgba(7, 10, 5, 0.6));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-main-green);
+  text-align: left;
+  transition: transform var(--t-base) var(--ease-out),
+    border-color var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out);
+}
+
+.hero-chip:hover {
+  transform: translateY(-3px);
+  border-color: var(--green-50);
+  box-shadow: 0 0 13px -6px var(--green-50);
+}
+
+.chip-label {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.chip-value {
+  margin-left: auto;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-text);
+  text-align: right;
+}
+
+/* ---------------------------------------------------------
+   Scroll cue
+   --------------------------------------------------------- */
+
+.hero-scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 26px;
+  z-index: 3;
+  transform: translateX(-50%);
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  color: var(--text-faint);
+  transition: color var(--t-base) var(--ease-out);
+}
+
+.hero-scroll:hover {
+  color: var(--color-main-green);
+}
+
+.hero-scroll-track {
+  position: relative;
+  width: 22px;
+  height: 36px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.hero-scroll-thumb {
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  width: 3px;
+  height: 8px;
+  margin-left: -1.5px;
+  border-radius: 2px;
+  background: var(--color-main-green);
+  box-shadow: 0 0 0 2px var(--green-14);
+  animation: bb-scroll-thumb 1.9s var(--ease-in-out) infinite;
+}
+
+@keyframes bb-scroll-thumb {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+}
+
+.hero-scroll-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+/* ---------------------------------------------------------
+   RESPONSIVE
+   --------------------------------------------------------- */
+
+@media (max-width: 1000px) {
+  .hero-omnitrix {
+    width: min(98%, 400px);
+  }
+
+  .hero-actions,
+  .hero-chips {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero-chips {
+    grid-template-columns: 1fr;
+    max-width: 380px;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+  }
+
+  .hero-presenter {
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+  }
+
+  .hero-section {
+    min-height: auto;
+    padding-top: 48px;
+  }
+}

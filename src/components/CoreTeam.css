@@ -1,0 +1,303 @@
+/* ============================================================
+   STUDENT CORE TEAM — command crew
+   Same reveal + hover language as the challenge cards so the page
+   reads as one system rather than a set of separate sections.
+   ============================================================ */
+
+.core-team-section {
+  position: relative;
+}
+
+.crew-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(276px, 1fr));
+  max-width: 1040px;
+  margin-inline: auto;
+}
+
+.crew-reveal {
+  display: flex;
+}
+
+/* ---- Card ---- */
+
+.crew-card {
+  --hue: var(--color-main-green);
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px 20px 20px;
+  overflow: hidden;
+  background: linear-gradient(
+    170deg,
+    color-mix(in srgb, var(--hue) 8%, var(--color-card-dark)),
+    var(--color-bg) 72%
+  );
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t-slow) var(--ease-out),
+    border-color var(--t-base) var(--ease-out),
+    box-shadow var(--t-slow) var(--ease-out);
+}
+
+.crew-card:hover,
+.crew-card:focus-within {
+  transform: translateY(-6px);
+  border-color: var(--color-main-green);
+  box-shadow: var(--shadow-lg), 0 0 40px -18px var(--color-main-green);
+}
+
+/* Soft corner wash, brightens on hover */
+.crew-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+      circle at 50% 0%,
+      color-mix(in srgb, var(--hue) 13%, transparent),
+      transparent 58%
+    ),
+    radial-gradient(circle at 50% 100%, var(--green-08), transparent 46%);
+  opacity: 0.7;
+  transition: opacity var(--t-slow) var(--ease-out);
+}
+
+.crew-card:hover::before,
+.crew-card:focus-within::before {
+  opacity: 1;
+}
+
+/* ---- Header row ---- */
+
+.crew-top {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.crew-badge {
+  padding: 5px 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-main-green);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--color-main-green);
+  border-radius: 999px;
+  box-shadow: 0 0 14px -6px var(--color-main-green);
+  transition: box-shadow var(--t-base) var(--ease-out);
+}
+
+.crew-card:hover .crew-badge {
+  box-shadow: 0 0 18px -4px var(--color-main-green);
+}
+
+.crew-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-accent-orange);
+  transition: color var(--t-base) var(--ease-out);
+}
+
+.crew-card:hover .crew-label {
+  color: var(--color-glow-green);
+}
+
+/* ---- Identity ---- */
+
+.crew-lead {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Initials stand in for a photo until real ones exist in public/ */
+.crew-avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 74px;
+  height: 74px;
+  color: var(--hue);
+  background: radial-gradient(
+    circle at 50% 32%,
+    color-mix(in srgb, var(--hue) 18%, var(--color-bg)),
+    var(--color-bg) 80%
+  );
+  border: 2px solid var(--color-main-green);
+  border-radius: 50%;
+  box-shadow: 0 0 20px -8px var(--color-main-green);
+  transition: transform var(--t-slow) var(--ease-out),
+    box-shadow var(--t-slow) var(--ease-out);
+}
+
+.crew-card:hover .crew-avatar {
+  transform: scale(1.05);
+  box-shadow: 0 0 26px -6px var(--color-main-green);
+}
+
+.crew-initials {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  letter-spacing: 0.06em;
+}
+
+.crew-ident {
+  min-width: 0;
+}
+
+.crew-name {
+  font-family: var(--font-heading);
+  font-size: 1.32rem;
+  line-height: 1.12;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  transition: color var(--t-base) var(--ease-out);
+}
+
+.crew-card:hover .crew-name {
+  color: var(--color-main-green);
+}
+
+.crew-title {
+  margin-top: 3px;
+  font-size: 0.95rem;
+  color: var(--color-glow-green);
+  transition: color var(--t-base) var(--ease-out);
+}
+
+.crew-card:hover .crew-title {
+  color: var(--color-text);
+}
+
+.crew-handle {
+  margin-top: 2px;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+  transition: color var(--t-base) var(--ease-out);
+}
+
+.crew-card:hover .crew-handle {
+  color: var(--color-accent-orange);
+}
+
+/* ---- Status ---- */
+
+.crew-status {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 14px;
+  background: rgba(0, 0, 0, 0.24);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: background-color var(--t-base) var(--ease-out),
+    border-color var(--t-base) var(--ease-out);
+}
+
+.crew-card:hover .crew-status {
+  background: rgba(0, 0, 0, 0.34);
+  border-color: var(--color-main-green);
+}
+
+.crew-status-key {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.crew-status-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 11px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-main-green);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  transition: color var(--t-base) var(--ease-out),
+    border-color var(--t-base) var(--ease-out);
+}
+
+.crew-card:hover .crew-status-value {
+  color: var(--color-glow-green);
+  border-color: var(--color-main-green);
+}
+
+.crew-dot {
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
+}
+
+/* ---- Link ---- */
+
+.crew-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-top: auto;
+  padding: 12px 18px;
+  font-family: var(--font-heading);
+  font-size: 0.98rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-bg);
+  background: var(--color-main-green);
+  border: 1px solid var(--color-main-green);
+  border-radius: var(--radius-sm);
+  transition: background-color var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out),
+    transform var(--t-fast) var(--ease-out);
+}
+
+.crew-link:hover,
+.crew-link:focus-visible {
+  background: var(--color-glow-green);
+  box-shadow: 0 0 22px -6px var(--color-main-green);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 720px) {
+  .crew-grid {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crew-card,
+  .crew-avatar,
+  .crew-card::before {
+    transition: none !important;
+  }
+}

@@ -1,0 +1,145 @@
+/* ============================================================
+   TICKER — continuous marquee strips
+   Two rows drift in opposite directions. Content is duplicated in
+   the markup so the translate loop never shows a seam.
+   ============================================================ */
+
+.ticker-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-block: clamp(28px, 4vw, 44px);
+  border-block: 1px solid var(--color-border);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-main-green) 4%, var(--color-bg)),
+    var(--color-bg)
+  );
+}
+
+.ticker {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ticker-label {
+  flex: 0 0 auto;
+  padding: 5px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-bg);
+  background: var(--color-main-green);
+  border-radius: 999px;
+}
+
+.ticker--reverse .ticker-label {
+  color: var(--color-main-green);
+  background: transparent;
+  border: 1px solid var(--green-30);
+}
+
+/* Overflow window; the runs inside it are what scrolls */
+.ticker-viewport {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+}
+
+.ticker-run {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+  width: max-content;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  animation: ticker-scroll 38s linear infinite;
+}
+
+.ticker--reverse .ticker-run {
+  animation-duration: 46s;
+  animation-direction: reverse;
+}
+
+.ticker-word {
+  position: relative;
+  padding-right: 34px;
+  font-family: var(--font-heading);
+  font-size: clamp(1.1rem, 2.6vw, 1.75rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--text-faint);
+  transition: color var(--t-base) var(--ease-out);
+}
+
+/* Small diamond separator between words */
+.ticker-word::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 6px;
+  height: 6px;
+  background: var(--color-main-green);
+  transform: translateY(-50%) rotate(45deg);
+  opacity: 0.65;
+}
+
+.ticker-run:hover .ticker-word {
+  color: var(--color-main-green);
+}
+
+/* The slogan row reads heavier so it feels like the punchline */
+.ticker--reverse .ticker-word {
+  font-size: clamp(0.95rem, 2.1vw, 1.35rem);
+  color: var(--color-glow-green);
+}
+
+.ticker--reverse .ticker-word::after {
+  background: var(--color-accent-orange);
+}
+
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-run {
+    animation: none;
+    flex-wrap: wrap;
+    width: auto;
+    gap: 20px 28px;
+  }
+
+  .ticker-word {
+    padding-right: 0;
+    font-size: 0.8rem;
+  }
+
+  .ticker-word::after {
+    display: none;
+  }
+}

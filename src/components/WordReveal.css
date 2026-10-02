@@ -1,0 +1,23 @@
+.word-reveal .wr-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.45em);
+  filter: blur(5px);
+  transition: opacity 620ms var(--ease-out),
+    transform 620ms var(--ease-out), filter 620ms var(--ease-out);
+}
+
+.word-reveal.is-revealed .wr-word {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .word-reveal .wr-word {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition-delay: 0ms !important;
+  }
+}

@@ -1,0 +1,410 @@
+/* ============================================================
+   CHALLENGE FILES — alien mission board
+   Each card is a sealed track file: solid surface, one alien hue,
+   a scan line, and a pointer-tracked energy pulse. Full details
+   open in MissionModal, one statement at a time.
+   ============================================================ */
+
+.problems-section {
+  position: relative;
+}
+
+/* Faint containment grid so the section reads as a mission board */
+.problems-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(to right, var(--green-04) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--green-04) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(
+    ellipse 80% 60% at 50% 40%,
+    #000 40%,
+    transparent 100%
+  );
+  opacity: 0.55;
+}
+
+.mission-grid {
+  position: relative;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(288px, 1fr));
+}
+
+.mission-reveal {
+  display: flex;
+}
+
+.mission-card {
+  --mx: 50%;
+  --my: 0%;
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px 20px 20px;
+  overflow: hidden;
+  background: linear-gradient(
+    175deg,
+    color-mix(in srgb, var(--hue) 7%, var(--color-card-dark)),
+    var(--hue-deep) 62%
+  );
+  border: 1px solid color-mix(in srgb, var(--hue) 26%, transparent);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  isolation: isolate;
+  transition: transform var(--t-slow) var(--ease-out),
+    border-color var(--t-base) var(--ease-out),
+    box-shadow var(--t-slow) var(--ease-out);
+}
+
+.mission-card:hover,
+.mission-card:focus-within {
+  transform: translateY(-6px);
+  border-color: color-mix(in srgb, var(--hue) 62%, transparent);
+  box-shadow: var(--shadow-lg), 0 0 0 1px color-mix(in srgb, var(--hue) 24%, transparent),
+    0 22px 50px -30px var(--hue);
+}
+
+/* Corner brackets inherit the card hue, not the global green */
+.mission-card.bracket::before,
+.mission-card.bracket::after {
+  border-color: var(--hue);
+}
+
+/* ---- Ambient layers ---- */
+
+.mission-scan {
+  position: absolute;
+  inset: -40% 0 auto;
+  height: 34%;
+  pointer-events: none;
+  z-index: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--hue) 13%, transparent),
+    transparent
+  );
+  opacity: 0;
+  animation: mission-scan 7s linear infinite;
+  transition: opacity var(--t-slow) var(--ease-out);
+}
+
+.mission-card:hover .mission-scan {
+  opacity: 1;
+}
+
+.mission-pulse {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    240px circle at var(--mx) var(--my),
+    color-mix(in srgb, var(--hue) 22%, transparent),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity var(--t-slow) var(--ease-out);
+}
+
+.mission-card:hover .mission-pulse,
+.mission-card:focus-within .mission-pulse {
+  opacity: 1;
+}
+
+.mission-ripple {
+  position: absolute;
+  z-index: 0;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  pointer-events: none;
+  border-radius: 50%;
+  border: 2px solid var(--hue);
+  animation: mission-ripple 700ms var(--ease-out) forwards;
+}
+
+/* ---- Omnitrix mark ---- */
+
+.mission-ring {
+  position: absolute;
+  top: 16px;
+  right: 14px;
+  z-index: 1;
+  width: 54px;
+  height: 54px;
+  opacity: 0.42;
+  pointer-events: none;
+  transition: opacity var(--t-slow) var(--ease-out),
+    transform var(--t-slow) var(--ease-out);
+}
+
+.mission-card:hover .mission-ring {
+  opacity: 0.95;
+  transform: scale(1.08);
+}
+
+.ring-spin {
+  transform-origin: 50% 50%;
+  animation: ring-spin 20s linear infinite;
+}
+
+.ring-spin-rev {
+  transform-origin: 50% 50%;
+  animation: ring-spin 14s linear infinite reverse;
+}
+
+.ring-core {
+  fill: var(--color-bg);
+}
+
+/* ---- Header row ---- */
+
+.mission-top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-right: 62px;
+}
+
+.mission-code {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--text-faint);
+}
+
+.mission-alien {
+  padding: 3px 10px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--hue);
+  background: color-mix(in srgb, var(--hue) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--hue) 34%, transparent);
+  border-radius: 999px;
+}
+
+.mission-clearance {
+  margin-left: auto;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-accent-orange);
+  transition: color var(--t-base) var(--ease-out);
+}
+
+.mission-card:hover .mission-clearance {
+  color: var(--color-glow-green);
+}
+
+/* ---- Emblem + title ---- */
+
+.mission-lead {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.mission-emblem {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  font-size: 1.5rem;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--hue) 16%, var(--color-bg)),
+    var(--color-bg) 78%
+  );
+  border: 1px solid color-mix(in srgb, var(--hue) 44%, transparent);
+  border-radius: 50%;
+  box-shadow: 0 0 20px -8px var(--hue);
+  transition: transform var(--t-slow) var(--ease-out),
+    box-shadow var(--t-slow) var(--ease-out);
+}
+
+.mission-card:hover .mission-emblem {
+  transform: scale(1.05);
+  box-shadow: 0 0 28px -6px var(--hue);
+}
+
+.mission-lead-text {
+  min-width: 0;
+}
+
+.mission-title {
+  font-family: var(--font-heading);
+  font-size: 1.28rem;
+  line-height: 1.14;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  transition: color var(--t-base) var(--ease-out);
+}
+
+.mission-card:hover .mission-title {
+  color: var(--hue);
+}
+
+.mission-brief {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+/* ---- Tag chips ---- */
+
+.mission-tags {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: auto 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tag-chip {
+  padding: 5px 11px;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  background: color-mix(in srgb, var(--hue) 8%, var(--color-bg));
+  border: 1px solid color-mix(in srgb, var(--hue) 20%, transparent);
+  border-radius: 999px;
+  transition: color var(--t-base) var(--ease-out),
+    border-color var(--t-base) var(--ease-out);
+}
+
+.mission-card:hover .tag-chip {
+  color: var(--color-text);
+  border-color: color-mix(in srgb, var(--hue) 44%, transparent);
+}
+
+/* ---- Open trigger ---- */
+
+.mission-open {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  padding: 12px 18px;
+  font-family: var(--font-heading);
+  font-size: 0.98rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-bg);
+  background: var(--hue);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out),
+    transform var(--t-fast) var(--ease-out);
+}
+
+.mission-open:hover,
+.mission-open:focus-visible {
+  background: var(--color-glow-green);
+  box-shadow: 0 0 22px -6px var(--hue);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+
+@keyframes mission-scan {
+  0% {
+    transform: translateY(-20%);
+  }
+  100% {
+    transform: translateY(340%);
+  }
+}
+
+@keyframes mission-ripple {
+  from {
+    opacity: 0.85;
+    transform: scale(0.2);
+  }
+  to {
+    opacity: 0;
+    transform: scale(26);
+  }
+}
+
+@keyframes ring-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 720px) {
+  .mission-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mission-card {
+    padding: 18px 16px 16px;
+  }
+
+  .mission-ring {
+    width: 46px;
+    height: 46px;
+  }
+
+  .mission-top {
+    padding-right: 54px;
+  }
+}
+
+@media (hover: none) {
+  .mission-card:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mission-card,
+  .mission-ring,
+  .mission-scan,
+  .mission-pulse,
+  .mission-ripple,
+  .ring-spin,
+  .ring-spin-rev {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .mission-scan {
+    opacity: 0;
+  }
+}

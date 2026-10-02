@@ -1,0 +1,412 @@
+/* ============================================================
+   PRIZE VAULT — sealed reward pods
+   Closed pods drift gently. Opening one cracks the lid, fires a
+   ring pulse and throws a short spark burst.
+   ============================================================ */
+
+.prizes-section {
+  position: relative;
+}
+
+.pod-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  max-width: 980px;
+  margin-inline: auto;
+}
+
+.pod-reveal {
+  display: flex;
+}
+
+/* ============================================================
+   POD SHELL
+   ============================================================ */
+
+.reward-pod {
+  --hue: var(--color-main-green);
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--hue) 6%, var(--color-card-dark)),
+    var(--color-bg) 70%
+  );
+  border: 1px solid color-mix(in srgb, var(--hue) 24%, transparent);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  transition: transform var(--t-slow) var(--ease-out),
+    border-color var(--t-base) var(--ease-out),
+    box-shadow var(--t-slow) var(--ease-out);
+}
+
+.reward-pod:hover {
+  transform: translateY(-6px);
+  border-color: color-mix(in srgb, var(--hue) 58%, transparent);
+  box-shadow: var(--shadow-lg), 0 24px 54px -34px var(--hue);
+}
+
+.reward-pod.is-open {
+  border-color: var(--hue);
+  box-shadow: var(--shadow-lg), 0 0 40px -14px var(--hue);
+}
+
+/* ---- Trigger ---- */
+
+.pod-trigger {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 24px 20px 18px;
+  overflow: hidden;
+  font: inherit;
+  color: inherit;
+  text-align: center;
+  background: none;
+  border: none;
+  border-radius: inherit;
+  cursor: pointer;
+  perspective: 700px;
+}
+
+.pod-trigger:focus-visible {
+  outline: 2px solid var(--hue);
+  outline-offset: -4px;
+}
+
+/* ---- Capsule art ---- */
+
+.pod-art {
+  position: relative;
+  display: block;
+  width: 128px;
+  height: 132px;
+  color: var(--hue);
+  /* `transform` is owned by the drift animation, so the hover lift uses the
+     independent `translate` property - otherwise the animation wins and the
+     card never lifts. */
+  translate: 0 0;
+  animation: pod-drift 5.5s var(--ease-in-out) infinite;
+  animation-delay: var(--pod-drift, 0s);
+  transition: translate var(--t-slow) var(--ease-out);
+}
+
+.reward-pod:hover .pod-art {
+  translate: 0 -7px;
+}
+
+.pod-lid,
+.pod-body,
+.pod-base {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.pod-lid {
+  top: 4px;
+  width: 104px;
+  height: 30px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--hue) 40%, var(--color-card-dark)),
+    var(--color-card-dark)
+  );
+  border: 2px solid color-mix(in srgb, var(--hue) 62%, transparent);
+  border-radius: 14px 14px 4px 4px;
+  box-shadow: inset 0 2px 0 color-mix(in srgb, var(--hue) 30%, transparent);
+  transform-origin: 50% 100%;
+  transition: transform 620ms var(--ease-out),
+    box-shadow 620ms var(--ease-out);
+}
+
+/* Hover = a small nudge so the pod feels live before you commit */
+.reward-pod:hover .pod-lid {
+  transform: translateX(-50%) translateY(-9px) rotateX(-16deg);
+}
+
+.reward-pod.is-open .pod-lid {
+  transform: translateX(-50%) translateY(-30px) rotateX(-52deg);
+  box-shadow: 0 10px 26px -12px var(--hue),
+    inset 0 2px 0 color-mix(in srgb, var(--hue) 55%, transparent);
+}
+
+.pod-body {
+  top: 32px;
+  width: 96px;
+  height: 74px;
+  display: grid;
+  place-items: center;
+  color: var(--hue);
+  background: radial-gradient(
+    circle at 50% 28%,
+    color-mix(in srgb, var(--hue) 22%, var(--color-card-dark)),
+    var(--color-bg) 78%
+  );
+  border: 2px solid color-mix(in srgb, var(--hue) 52%, transparent);
+  border-radius: 6px 6px 18px 18px;
+  box-shadow: inset 0 0 26px -8px var(--hue);
+  transition: box-shadow var(--t-slow) var(--ease-out),
+    border-color var(--t-base) var(--ease-out);
+}
+
+.reward-pod.is-open .pod-body {
+  border-color: var(--hue);
+  box-shadow: inset 0 0 40px -6px var(--hue), 0 0 34px -12px var(--hue);
+}
+
+.pod-ring {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  margin-left: -20px;
+  opacity: 0.55;
+}
+
+.reward-pod.is-open .pod-ring {
+  opacity: 1;
+}
+
+.pod-place {
+  position: relative;
+  z-index: 1;
+  margin-top: 22px;
+  font-family: var(--font-heading);
+  font-size: 1.06rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.pod-base {
+  bottom: 4px;
+  width: 112px;
+  height: 12px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--hue) 26%, var(--color-card-dark)),
+    var(--color-bg)
+  );
+  border: 2px solid color-mix(in srgb, var(--hue) 40%, transparent);
+  border-radius: 3px 3px 12px 12px;
+}
+
+/* ---- Labels ---- */
+
+.pod-name {
+  font-family: var(--font-heading);
+  font-size: 1.02rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.pod-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hue);
+}
+
+/* ============================================================
+   OPEN EFFECTS
+   ============================================================ */
+
+.pod-flash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 34%,
+    color-mix(in srgb, var(--hue) 46%, transparent),
+    transparent 58%
+  );
+  opacity: 0;
+  animation: pod-flash 720ms var(--ease-out);
+}
+
+.pod-wave {
+  position: absolute;
+  top: 34%;
+  left: 50%;
+  width: 130px;
+  height: 130px;
+  margin: -65px 0 0 -65px;
+  pointer-events: none;
+  border: 2px solid var(--hue);
+  border-radius: 50%;
+  opacity: 0;
+  animation: pod-wave 820ms var(--ease-out);
+}
+
+.pod-sparks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.pod-sparks i {
+  position: absolute;
+  top: 34%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px;
+  border-radius: 50%;
+  background: var(--hue);
+  box-shadow: 0 0 9px var(--hue);
+  opacity: 0;
+  animation: pod-spark 900ms var(--ease-out) forwards;
+}
+
+.pod-sparks i:nth-child(1) { --a: 0deg; }
+.pod-sparks i:nth-child(2) { --a: 45deg; }
+.pod-sparks i:nth-child(3) { --a: 90deg; }
+.pod-sparks i:nth-child(4) { --a: 135deg; }
+.pod-sparks i:nth-child(5) { --a: 180deg; }
+.pod-sparks i:nth-child(6) { --a: 225deg; }
+.pod-sparks i:nth-child(7) { --a: 270deg; }
+.pod-sparks i:nth-child(8) { --a: 315deg; }
+
+/* ---- Payout ---- */
+
+.pod-panel {
+  padding: 0 20px 22px;
+  text-align: center;
+  animation: pod-panel-in 520ms var(--ease-out) both;
+}
+
+.pod-panel[hidden] {
+  display: none;
+}
+
+.pod-amount {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--hue);
+  text-shadow: 0 0 28px -6px var(--hue);
+}
+
+.pod-title {
+  margin-top: 8px;
+  font-family: var(--font-heading);
+  font-size: 1.18rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.pod-text {
+  margin-top: 8px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--text-dim);
+}
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+
+@keyframes pod-drift {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+
+@keyframes pod-flash {
+  0% {
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes pod-wave {
+  0% {
+    opacity: 0.85;
+    transform: scale(0.25);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.5);
+  }
+}
+
+@keyframes pod-spark {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--a)) translateX(18px) scale(0.5);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--a)) translateX(96px) scale(0.1);
+  }
+}
+
+@keyframes pod-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE + ACCESSIBILITY
+   ============================================================ */
+
+@media (max-width: 720px) {
+  .pod-grid {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pod-art,
+  .pod-flash,
+  .pod-wave,
+  .pod-sparks i,
+  .pod-panel,
+  .reward-pod,
+  .pod-lid,
+  .pod-body {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .pod-flash,
+  .pod-wave,
+  .pod-sparks {
+    display: none;
+  }
+}

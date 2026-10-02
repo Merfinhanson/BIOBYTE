@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#B6FF5C" />
+<meta name="description" content="BIOBYTE — a biotechnology hackathon by Crescent Technocrats Club. Build tools that decode biology." />
+<title>BIOBYTE — Biotechnology Hackathon</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+
+<style>
+/* ==================================================================
+   1. CONFIG — edit everything here
+   ================================================================== */
+
+:root{
+  /* --- Omnitrix colour system --- */
+  --green:        #7CFF00;
+  --light-green:  #B6FF5C;
+  --mint:         #EAFBE0;
+  --black:        #070A05;
+  --dark-green:   #0F1A08;
+  --border-green: #2A4A12;
+  --orange:       #FF7A00;
+  --white-text:   #E8FFE8;
+
+  /* --- Alien colourways (problem panels) --- */
+  --al-upgrade-a:      #7CFF00;  --al-upgrade-b:      #050A03;
+  --al-greymatter-a:   #9AA8A0;  --al-greymatter-b:   #101614;  --al-greymatter-c: #D8F5DC;
+  --al-heatblast-a:    #FF7A00;  --al-heatblast-b:    #180602;  --al-heatblast-c:  #FFC46B;
+  --al-diamondhead-a:  #2EE6D6;  --al-diamondhead-b:  #02171B;  --al-diamondhead-c: #8CF3FF;
+  --al-ghostfreak-a:   #7B3FD4;  --al-ghostfreak-b:   #0B0418;  --al-ghostfreak-c:  #B6FF7A;
+
+  /* --- Type --- */
+  --font-display: "Anton", "Arial Narrow", sans-serif;
+  --font-label:   "Orbitron", sans-serif;
+  --font-body:    "Rajdhani", system-ui, sans-serif;
+  --font-mono:    "Share Tech Mono", ui-monospace, monospace;
+
+  /* --- Motion --- */
+  --bg-fade: 800ms;
+  --ease: cubic-bezier(.16,1,.3,1);
+}
+
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+
+html{ scroll-behavior:smooth; scroll-padding-top:110px; -webkit-text-size-adjust:100%; }
+
+body{
+  font-family:var(--font-body);
+  font-size:1.1rem;
+  line-height:1.6;
+  background:var(--mint);
+  color:var(--black);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* The whole-page background morphs between sections.
+   Two stacked layers crossfade, so the page never flashes through to
+   a bare background mid-scroll. */
+#bg-a,#bg-b{
+  position:fixed; inset:0; z-index:-2; opacity:0;
+  transition:opacity var(--bg-fade) var(--ease);
+}
+#bg-b{ z-index:-1; }
+/* Subtle film grain, no remote images */
+#bg-a::after,#bg-b::after{
+  content:""; position:absolute; inset:-50%;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E");
+  opacity:.16; mix-blend-mode:overlay; pointer-events:none;
+}
+
+img,svg{ display:block; max-width:100%; }
+a{ color:inherit; text-decoration:none; }
+button,input,select,textarea{ font:inherit; color:inherit; }
+button{ background:none; border:none; cursor:pointer; }
+ul{ list-style:none; }
+:focus-visible{ outline:3px solid var(--green); outline-offset:3px; border-radius:4px; }
+
+.container{ width:100%; max-width:1240px; margin-inline:auto; padding-inline:clamp(20px,5vw,44px); }
+
+.label{
+  font-family:var(--font-label); font-size:clamp(.6rem,1.1vw,.74rem);
+  letter-spacing:.5em; text-transform:uppercase; font-weight:700;
+}
+
+/* ==================================================================
+   2. SCROLL PROGRESS
+   ================================================================== */
+
+#progress{
+  position:fixed; top:0; left:0; height:3px; width:100%;
+  background:var(--green); transform:scaleX(0); transform-origin:0 50%;
+  z-index:120;
+}
+
+/* ==================================================================
+   3. CUSTOM CURSOR — Omnitrix hourglass
+   ================================================================== */
+
+#cursor{
+  position:fixed; top:0; left:0; width:26px; height:26px; margin:-13px 0 0 -13px;
+  pointer-events:none; z-index:200; opacity:0;
+  transition:opacity .3s, transform .12s ease-out;
+  will-change:transform;
+}
+#cursor .core{
+  width:100%; height:100%;
+  background:linear-gradient(180deg,var(--light-green),var(--green));
+  clip-path:polygon(0 0,100% 0,58% 50%,100% 100%,0 100%,42% 50%);
+  box-shadow:0 0 14px rgba(124,255,0,.85);
+}
+body.cursor-ready #cursor{ opacity:1; }
+body.cursor-hot #cursor{ animation:cursor-spin .9s linear infinite; }
+@keyframes cursor-spin{ to{ transform:rotate(360deg); } }
+@media (hover:none),(pointer:coarse){ #cursor{ display:none; } }
+
+/* ==================================================================
+   4. NAVBAR — floating glass pill
+   ================================================================== */
+
+#nav{
+  position:fixed; top:max(14px,env(safe-area-inset-top)); left:50%;
+  transform:translateX(-50%); z-index:110;
+  width:min(1180px, calc(100% - 28px));
+  display:flex; align-items:center; justify-content:space-between; gap:14px;
+  padding:9px 10px 9px 20px;
+  background:rgba(255,255,255,.42);
+  border:1px solid rgba(124,255,0,.5);
+  border-radius:999px;
+  box-shadow:0 12px 34px -18px rgba(0,0,0,.55);
+  backdrop-filter:blur(14px) saturate(150%);
+  -webkit-backdrop-filter:blur(14px) saturate(150%);
+  transition:background var(--bg-fade) var(--ease), border-color var(--bg-fade) var(--ease);
+}
+body.nav-dark #nav{ background:rgba(10,14,9,.5); border-color:rgba(124,255,0,.32); }
+body.nav-light #nav{ background:rgba(255,255,255,.6); }
+
+.nav-links{ display:flex; align-items:center; gap:4px; }
+.nav-links a{
+  font-family:var(--font-label); font-size:.68rem; letter-spacing:.12em;
+  text-transform:uppercase; font-weight:500;
+  padding:9px 12px; border-radius:999px;
+  transition:color .25s, background .25s;
+}
+body.nav-dark .nav-links a{ color:rgba(232,255,232,.72); }
+.nav-links a:hover{ color:var(--green); }
+.nav-links a.active{ color:var(--black); background:var(--green); }
+body.nav-dark .nav-links a.active{ color:var(--black); }
+
+.nav-logo{
+  display:flex; align-items:center; gap:8px; flex:none;
+  padding:5px 13px; border-radius:999px;
+  background:var(--black); color:var(--green);
+  font-family:var(--font-label); font-weight:700; font-size:.72rem; letter-spacing:.16em;
+}
+.nav-logo svg{ width:15px; height:15px; }
+
+.pill{
+  font-family:var(--font-display); font-size:.95rem; letter-spacing:.05em;
+  padding:11px 22px; border-radius:999px;
+  background:var(--black); color:var(--green);
+  display:inline-flex; align-items:center; gap:7px;
+  transition:transform .25s var(--ease), box-shadow .25s var(--ease);
+}
+.pill:hover{ transform:translateY(-2px); box-shadow:0 8px 22px -8px rgba(124,255,0,.7); }
+.pill .arr{ color:var(--light-green); }
+
+@media (max-width:900px){
+  .nav-links{ display:none; }
+  #nav{ padding:8px 8px 8px 14px; }
+}
+
+/* ==================================================================
+   5. SECTION SHELL
+   ================================================================== */
+
+.section{ position:relative; padding-block:clamp(84px,10vw,150px); }
+.section.on-dark{ color:var(--white-text); }
+.section.on-light{ color:var(--black); }
+
+.head{ margin-bottom:clamp(40px,5vw,64px); max-width:60ch; }
+.head.center{ margin-inline:auto; text-align:center; }
+.head .label{ color:var(--green); display:block; margin-bottom:14px; }
+.on-light .head .label{ color:#3E7A0B; }
+
+/* Slanted wipe on section titles */
+.wipe{
+  position:relative; display:inline-block;
+  font-family:var(--font-display);
+  font-size:clamp(2.3rem,6.4vw,4.6rem); line-height:.94;
+  text-transform:uppercase; letter-spacing:.005em;
+  font-style:italic;
+  transform:skewX(-7deg);
+}
+.wipe::after{
+  content:""; position:absolute; left:-6%; top:0; height:100%; width:112%;
+  background:currentColor; opacity:.16;
+  transform:translateX(-105%) skewX(7deg);
+  transition:transform .7s var(--ease);
+}
+.wipe.in::after{ transform:translateX(0) skewX(7deg); }
+
+/* ==================================================================
+   6. HERO — light mint to lime
+   ================================================================== */
+
+#hero{
+  position:relative; min-height:100vh; min-height:100svh;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:120px 0 60px; text-align:center; overflow:hidden;
+}
+
+/* Omnitrix dial rings */
+.rings{ position:absolute; inset:0; display:grid; place-items:center; pointer-events:none; z-index:0; }
+.rings i{
+  position:absolute; border-radius:50%;
+  border:1px solid rgba(62,122,11,.2);
+}
+.rings i:nth-child(1){ width:min(78vh,640px); aspect-ratio:1; animation:spin 46s linear infinite; border-style:dashed; }
+.rings i:nth-child(2){ width:min(58vh,470px); aspect-ratio:1; animation:spin 33s linear infinite reverse; }
+.rings i:nth-child(3){ width:min(96vh,790px); aspect-ratio:1; animation:spin 68s linear infinite; opacity:.55; }
+@keyframes spin{ to{ transform:rotate(360deg); } }
+
+/* network dots + hairlines */
+.net{ position:absolute; inset:0; pointer-events:none; z-index:0; opacity:.5; }
+
+/* Clickable transformation dial */
+.dial-hit{
+  position:absolute; inset:0; z-index:1; border:none; cursor:pointer;
+  display:grid; place-items:center; background:none;
+}
+.dial-hit:focus-visible{ outline:3px solid var(--green); outline-offset:-6px; border-radius:50%; }
+
+#flash{
+  position:fixed; inset:0; z-index:190; pointer-events:none;
+  background:radial-gradient(circle at 50% 45%, var(--light-green), var(--green) 45%, transparent 72%);
+  opacity:0; transition:opacity .12s;
+}
+#alien-name{
+  position:fixed; inset:0; z-index:191; display:grid; place-items:center;
+  pointer-events:none; opacity:0; transition:opacity .3s;
+  font-family:var(--font-display); font-style:italic; transform:skewX(-7deg);
+  font-size:clamp(3rem,13vw,11rem); text-transform:uppercase; color:var(--black);
+  text-shadow:0 6px 40px rgba(124,255,0,.7);
+}
+#alien-name.show{ opacity:1; }
+
+.hero-inner{ position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; }
+#hero .label{ color:#3E7A0B; }
+
+h1#wordmark{
+  font-family:var(--font-display); font-weight:400;
+  font-size:clamp(3.6rem,15.5vw,13rem); line-height:.84;
+  letter-spacing:-.012em; text-transform:uppercase; color:var(--black);
+  margin:clamp(10px,2vw,20px) 0;
+  display:flex; flex-wrap:nowrap;
+}
+h1#wordmark .ltr{
+  display:inline-block;
+  opacity:0;
+  transform:translate3d(0,.58em,0) rotate(3deg) scale(.96);
+  animation:rise 1.05s cubic-bezier(.22,.9,.25,1) forwards;
+}
+@keyframes rise{
+  0%{ opacity:0; transform:translate3d(0,.58em,0) rotate(3deg) scale(.96); filter:blur(5px); }
+  55%{ opacity:1; filter:blur(0px); }
+  100%{ opacity:1; transform:translate3d(0,0,0) rotate(0deg) scale(1); filter:blur(0px); }
+}
+
+/* supporting hero copy settles in after the wordmark */
+.hero-fade{
+  opacity:0;
+  animation:fadeUp .8s var(--ease) forwards;
+  animation-delay:calc(var(--d,0ms) + 560ms);
+}
+@keyframes fadeUp{
+  from{ opacity:0; transform:translateY(16px); }
+  to{ opacity:1; transform:none; }
+}
+
+.hero-cta{ margin-top:clamp(22px,3vw,36px); display:flex; gap:14px; flex-wrap:wrap; justify-content:center; }
+.btn{
+  font-family:var(--font-display); font-size:1.06rem; letter-spacing:.06em; text-transform:uppercase;
+  padding:16px 34px; border-radius:999px;
+  display:inline-flex; align-items:center; gap:9px;
+  transition:transform .25s var(--ease), box-shadow .25s var(--ease), background .25s;
+}
+.btn-dark{ background:var(--black); color:var(--light-green); }
+.btn-dark:hover{ transform:translateY(-3px); box-shadow:0 14px 34px -12px rgba(124,255,0,.75); }
+.btn-ghost{ border:1.5px solid var(--black); color:var(--black); }
+.btn-ghost:hover{ background:rgba(0,0,0,.06); transform:translateY(-3px); }
+
+.scroll-hint{
+  position:absolute; left:50%; bottom:max(22px,env(safe-area-inset-bottom)); transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:8px; z-index:2;
+  font-family:var(--font-mono); font-size:.66rem; letter-spacing:.24em; color:#3E7A0B; z-index:3;
+}
+.scroll-hint svg{ animation:bob 1.9s var(--ease) infinite; }
+@keyframes bob{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(7px);} }
+
+.corner-btn{
+  position:absolute; bottom:max(24px,env(safe-area-inset-bottom)); z-index:3;
+  width:46px; height:46px; border-radius:50%;
+  background:rgba(7,10,5,.86); color:var(--light-green);
+  display:grid; place-items:center; font-weight:700;
+}
+.corner-btn.help{ left:max(20px,env(safe-area-inset-left)); }
+.corner-btn.sound{ right:max(20px,env(safe-area-inset-right)); }
+.eq{ display:flex; align-items:flex-end; gap:2.5px; height:15px; }
+.eq i{ width:3px; background:var(--light-green); border-radius:2px; animation:eq .9s ease-in-out infinite; }
+.eq i:nth-child(1){ height:5px;  animation-delay:0s; }
+.eq i:nth-child(2){ height:11px; animation-delay:.18s; }
+.eq i:nth-child(3){ height:15px; animation-delay:.36s; }
+.eq i:nth-child(4){ height:8px;  animation-delay:.54s; }
+@keyframes eq{ 0%,100%{ transform:scaleY(.4);} 50%{ transform:scaleY(1);} }
+.corner-btn.muted .eq i{ animation-play-state:paused; }
+
+/* ==================================================================
+   7. ABOUT — dark, hex grid, central Omnitrix light
+   ================================================================== */
+
+#about{ overflow:hidden; }
+#about .hexgrid{
+  position:absolute; inset:0; pointer-events:none; opacity:.3;
+  background-image:
+    repeating-linear-gradient(60deg,  rgba(124,255,0,.14) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(-60deg, rgba(124,255,0,.14) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(0deg,   rgba(124,255,0,.09) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(90deg,  rgba(124,255,0,.09) 0 1px, transparent 1px 46px);
+}
+#about .aura{
+  position:absolute; left:50%; top:50%; width:min(120vw,1100px); aspect-ratio:1;
+  transform:translate(-50%,-50%); pointer-events:none;
+  background:radial-gradient(circle, rgba(124,255,0,.17), transparent 62%);
+}
+.about-grid{ position:relative; display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:18px; }
+.about-card{
+  border:1px solid var(--border-green); border-radius:18px; padding:26px 22px;
+  background:linear-gradient(165deg,#0F1A08,#0A1107);
+  transition:transform .3s var(--ease), border-color .3s, box-shadow .3s;
+}
+.about-card:nth-child(2){ transform:translateY(20px); }
+.about-card:nth-child(4){ transform:translateY(-12px); }
+.about-card:hover{ transform:translateY(-6px); border-color:var(--green); box-shadow:0 18px 40px -22px rgba(124,255,0,.6); }
+.about-card:nth-child(2):hover,.about-card:nth-child(4):hover{ transform:translateY(6px); }
+.about-card h3{ font-family:var(--font-display); font-size:1.5rem; text-transform:uppercase; letter-spacing:.03em; margin-bottom:9px; }
+.about-card p{ color:rgba(232,255,232,.7); font-size:.98rem; }
+@media (max-width:720px){ .about-card:nth-child(2),.about-card:nth-child(4){ transform:none; } }
+
+.about-blurb{ position:relative; max-width:56ch; color:rgba(232,255,232,.78); margin-bottom:34px; }
+
+/* ==================================================================
+   8. PROBLEM STATEMENTS — alien panels
+   ================================================================== */
+
+#problems{ padding-block:0; }
+.panels{ position:relative; }
+.panel{
+  position:relative; min-height:82vh; min-height:82svh;
+  display:flex; align-items:center;
+  padding:clamp(48px,7vw,90px) 0;
+  border-top:1px solid rgba(255,255,255,.07);
+  transition:background var(--bg-fade) var(--ease);
+  overflow:hidden;
+}
+.panel:first-child{ border-top:none; }
+.panel::before{
+  content:""; position:absolute; inset:0; z-index:-1;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 100%, var(--pa) 0%, transparent 70%),
+    linear-gradient(170deg, var(--pb), #05070a 65%);
+  opacity:.5; transition:opacity var(--bg-fade) var(--ease);
+}
+.panel::after{
+  content:""; position:absolute; inset:0; z-index:-1;
+  background:repeating-linear-gradient(0deg, rgba(255,255,255,.045) 0 1px, transparent 1px 34px);
+  opacity:.5;
+}
+.panel.is-active::before{ opacity:1; }
+
+/* Big semi-transparent dial that locks per panel */
+.panel .dial{
+  position:absolute; right:-6%; top:50%; width:min(58vh,470px); aspect-ratio:1;
+  transform:translateY(-50%) rotate(var(--dial,0deg));
+  opacity:.14; pointer-events:none;
+  transition:transform 1.1s var(--ease), opacity var(--bg-fade) var(--ease);
+}
+.panel.is-active .dial{ opacity:.3; }
+
+.panel-body{ position:relative; z-index:2; display:grid; grid-template-columns:auto 1fr; gap:clamp(20px,4vw,52px); align-items:center; }
+.panel-num{
+  font-family:var(--font-display); font-size:clamp(5rem,17vw,13rem); line-height:.8;
+  color:var(--pc); opacity:.92;
+}
+.panel-tag{
+  display:inline-flex; align-items:center; gap:9px;
+  font-family:var(--font-label); font-size:.66rem; letter-spacing:.34em; text-transform:uppercase;
+  padding:7px 15px; border-radius:999px;
+  border:1px solid var(--pc); color:var(--pc); margin-bottom:14px;
+}
+.panel-tag .dot{ width:6px; height:6px; border-radius:50%; background:var(--pc); }
+.panel h3{ font-family:var(--font-display); font-size:clamp(1.9rem,4.6vw,3.4rem); line-height:.98; text-transform:uppercase; margin-bottom:12px; }
+.panel p{ max-width:52ch; color:rgba(232,255,232,.76); font-size:1.05rem; }
+.panel .pts{ margin-top:16px; display:flex; flex-wrap:wrap; gap:8px; }
+.panel .pts li{
+  font-size:.78rem; letter-spacing:.02em; padding:6px 12px; border-radius:999px;
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
+}
+@media (max-width:760px){
+  .panel-body{ grid-template-columns:1fr; gap:14px; }
+  .panel .dial{ opacity:.08; right:-24%; }
+}
+
+/* ==================================================================
+   9. REGISTRATION — dark terminal
+   ================================================================== */
+
+.gate{
+  width:min(680px,100%); margin-inline:auto;
+  border:1px solid var(--border-green); border-radius:22px;
+  background:linear-gradient(170deg,#0F1A08,#080D06);
+  padding:clamp(26px,4vw,42px); position:relative; overflow:hidden;
+}
+.gate-bar{
+  display:flex; align-items:center; gap:10px;
+  padding-bottom:14px; margin-bottom:22px;
+  border-bottom:1px solid rgba(124,255,0,.16);
+  font-family:var(--font-mono); font-size:.72rem; letter-spacing:.16em; color:rgba(232,255,232,.62);
+}
+.gate-bar .dots{ display:flex; gap:5px; }
+.gate-bar .dots i{ width:9px; height:9px; border-radius:50%; background:rgba(232,255,232,.24); }
+.gate-bar .st{ margin-left:auto; color:var(--green); }
+
+.field{ margin-bottom:15px; }
+.field label{
+  display:block; font-family:var(--font-label); font-size:.64rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--green); margin-bottom:7px;
+}
+.field input,.field select,.field textarea{
+  width:100%; padding:13px 15px; border-radius:11px;
+  background:#0A1206; border:1px solid var(--border-green);
+  color:var(--white-text); font-family:var(--font-body); font-size:1rem;
+  transition:border-color .25s, box-shadow .25s;
+}
+.field textarea{ min-height:104px; resize:vertical; }
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none; border-color:var(--green); box-shadow:0 0 0 3px rgba(124,255,0,.16);
+}
+.field .err{ display:block; margin-top:5px; font-size:.82rem; color:#FF9A6B; }
+.field.bad input,.field.bad select,.field.bad textarea{ border-color:#FF7A4D; }
+
+.row2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.row3{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+@media (max-width:640px){ .row2,.row3{ grid-template-columns:1fr; } }
+
+.members{ border:1px dashed var(--border-green); border-radius:14px; padding:16px; margin-bottom:16px; }
+.members h4{ font-family:var(--font-label); font-size:.64rem; letter-spacing:.2em; text-transform:uppercase; color:var(--green); margin-bottom:12px; }
+.member-row{ padding:12px; border-radius:12px; background:rgba(124,255,0,.04); margin-bottom:10px; }
+.member-row:last-child{ margin-bottom:0; }
+.member-row .who{ font-family:var(--font-mono); font-size:.72rem; color:rgba(232,255,232,.5); margin-bottom:8px; }
+
+.notice{
+  display:flex; gap:11px; align-items:flex-start;
+  padding:14px 16px; border-radius:12px; margin-bottom:18px;
+  background:rgba(124,255,0,.07); border:1px solid rgba(124,255,0,.22);
+  font-size:.94rem; color:rgba(232,255,232,.82);
+}
+.notice.warn{ background:rgba(255,122,0,.09); border-color:rgba(255,122,0,.3); }
+.notice.bad{ background:rgba(255,90,60,.1); border-color:rgba(255,90,60,.34); }
+.notice svg{ flex:none; margin-top:2px; }
+
+.google-btn{
+  width:100%; justify-content:center;
+  background:#fff; color:#0b0f08; border-radius:999px;
+  font-family:var(--font-body); font-weight:600; font-size:1rem;
+  padding:14px 22px; display:flex; align-items:center; gap:11px;
+  transition:transform .25s var(--ease), box-shadow .25s;
+}
+.google-btn:hover{ transform:translateY(-2px); box-shadow:0 12px 26px -12px rgba(0,0,0,.7); }
+
+.gate .pill{ width:100%; justify-content:center; }
+.pill.mute{ background:rgba(124,255,0,.12); color:var(--green); }
+.spinner{
+  width:15px; height:15px; border-radius:50%;
+  border:2px solid rgba(124,255,0,.28); border-top-color:var(--green);
+  animation:spin .7s linear infinite;
+}
+[hidden]{ display:none !important; }
+
+/* ==================================================================
+   10. TIMELINE — vertical line draws on scroll
+   ================================================================== */
+
+#timeline{ overflow:hidden; }
+.tl-wrap{ position:relative; padding-left:clamp(30px,6vw,64px); }
+.tl-line{
+  position:absolute; left:clamp(9px,1.6vw,17px); top:8px; bottom:8px; width:2px;
+  background:rgba(124,255,0,.14); border-radius:2px;
+}
+.tl-fill{
+  position:absolute; inset:0; background:linear-gradient(180deg,var(--green),var(--light-green));
+  transform-origin:top; transform:scaleY(0); border-radius:2px;
+  box-shadow:0 0 14px rgba(124,255,0,.6);
+}
+.tl-item{ position:relative; padding:0 0 clamp(30px,4vw,46px); }
+.tl-item:last-child{ padding-bottom:0; }
+.tl-dot{
+  position:absolute; left:calc(clamp(30px,6vw,64px) * -1 + clamp(9px,1.6vw,17px) - 6px); top:4px;
+  width:14px; height:14px; border-radius:50%;
+  background:#0A1206; border:2px solid rgba(124,255,0,.35);
+  transition:background .45s var(--ease), border-color .45s, box-shadow .45s, transform .45s var(--ease);
+}
+.tl-item.lit .tl-dot{
+  background:var(--green); border-color:var(--light-green);
+  box-shadow:0 0 16px rgba(124,255,0,.85); transform:scale(1.18);
+}
+.tl-item .step{
+  font-family:var(--font-mono); font-size:.74rem; letter-spacing:.2em; color:var(--green);
+}
+.tl-item h3{ font-family:var(--font-display); font-size:clamp(1.5rem,3.4vw,2.2rem); text-transform:uppercase; margin:4px 0 7px; }
+.tl-item p{ color:rgba(232,255,232,.72); max-width:52ch; }
+@media (max-width:640px){ .tl-item .tl-dot{ left:-30px; } }
+
+.rules{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; margin-top:clamp(46px,6vw,74px); }
+.rule{
+  display:flex; gap:12px; align-items:flex-start;
+  padding:16px 18px; border-radius:14px;
+  border:1px solid var(--border-green); background:rgba(15,26,8,.6);
+  font-size:.98rem; color:rgba(232,255,232,.82);
+}
+.rule .n{ font-family:var(--font-mono); font-size:.78rem; color:var(--green); flex:none; padding-top:3px; }
+
+/* ==================================================================
+   11. PRIZES — podium
+   ================================================================== */
+
+.podium{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; align-items:end; }
+.pod{
+  border:1px solid var(--border-green); border-radius:22px;
+  padding:28px 22px; text-align:center; position:relative; overflow:hidden;
+  background:linear-gradient(180deg,#101B09,#080D06);
+  transition:transform .35s var(--ease), box-shadow .35s var(--ease);
+}
+.pod.first{ padding-block:44px; border-color:var(--green); }
+.pod::before{
+  content:""; position:absolute; left:50%; top:0; width:150%; aspect-ratio:1;
+  transform:translate(-50%,-62%);
+  background:radial-gradient(circle, rgba(124,255,0,.24), transparent 62%);
+  opacity:.5; animation:aura 3.6s var(--ease) infinite; pointer-events:none;
+}
+.pod.first::before{ opacity:1; }
+@keyframes aura{ 0%,100%{ opacity:.42; transform:translate(-50%,-62%) scale(.92);} 50%{ opacity:.85; transform:translate(-50%,-62%) scale(1.06);} }
+.pod:hover{ transform:translateY(-8px); box-shadow:0 24px 54px -26px rgba(124,255,0,.7); }
+.pod .place{ font-family:var(--font-display); font-size:clamp(2.2rem,5vw,3.2rem); color:var(--green); }
+.pod .amt{ font-family:var(--font-display); font-size:clamp(1.5rem,3.4vw,2.1rem); margin:8px 0 4px; color:var(--white-text); }
+.pod .note{ font-size:.92rem; color:rgba(232,255,232,.66); }
+.pod.first .amt{ color:var(--light-green); }
+@media (max-width:820px){ .podium{ grid-template-columns:1fr; } .pod.first{ order:-1; } }
+
+/* ==================================================================
+   12. FAQ — pale mint echo
+   ================================================================== */
+
+#faq .faq-list{ max-width:860px; margin-inline:auto; display:flex; flex-direction:column; gap:11px; }
+.faq{
+  border:1px solid rgba(7,10,5,.16); border-radius:16px; background:rgba(255,255,255,.62);
+  overflow:hidden; transition:border-color .3s, background .3s;
+}
+.faq.open{ border-color:var(--black); background:#fff; }
+.faq-q{
+  width:100%; display:flex; align-items:center; gap:16px; text-align:left;
+  padding:20px 22px; font-family:var(--font-display); font-size:1.16rem;
+  text-transform:uppercase; letter-spacing:.01em; color:var(--black);
+}
+.faq-q .idx{ font-family:var(--font-mono); font-size:.78rem; color:#3E7A0B; flex:none; }
+.faq-q .chev{ margin-left:auto; flex:none; transition:transform .35s var(--ease); }
+.faq.open .chev{ transform:rotate(180deg); }
+.faq-a{ max-height:0; overflow:hidden; transition:max-height .45s var(--ease); }
+.faq.open .faq-a{ max-height:340px; }
+.faq-a p{ padding:0 22px 22px 62px; color:#2B3324; font-size:1.02rem; }
+@media (max-width:560px){ .faq-a p{ padding-left:22px; } }
+
+/* ==================================================================
+   13. FINAL CTA + FOOTER — bright lime
+   ================================================================== */
+
+#cta{
+  position:relative; text-align:center; overflow:hidden;
+  padding-block:clamp(90px,12vw,170px);
+  background:linear-gradient(140deg,#B6FF5C 0%, #7CFF00 52%, #EAFBE0 100%);
+  color:var(--black);
+}
+#cta .rings i{ border-color:rgba(7,10,5,.16); }
+#cta h2{
+  font-family:var(--font-display); font-style:italic; transform:skewX(-7deg);
+  font-size:clamp(2.6rem,10vw,8rem); line-height:.9; text-transform:uppercase;
+}
+#cta p{ max-width:44ch; margin:18px auto 30px; font-size:1.12rem; color:#22300F; }
+footer{
+  background:var(--black); color:var(--white-text);
+  padding-block:clamp(44px,6vw,68px) max(26px,env(safe-area-inset-bottom));
+}
+.foot-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:34px; }
+.foot-grid h4{ font-family:var(--font-label); font-size:.66rem; letter-spacing:.24em; text-transform:uppercase; color:var(--green); margin-bottom:14px; }
+.foot-grid li, .foot-grid p{ font-size:.96rem; color:rgba(232,255,232,.72); margin-bottom:8px; }
+.foot-grid a:hover{ color:var(--green); }
+.foot-base{
+  margin-top:clamp(34px,5vw,54px); padding-top:22px;
+  border-top:1px solid rgba(124,255,0,.16);
+  display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  font-family:var(--font-mono); font-size:.74rem; color:rgba(232,255,232,.5);
+}
+
+/* ==================================================================
+   14. REDUCED MOTION
+   ================================================================== */
+
+@media (prefers-reduced-motion:reduce){
+  html{ scroll-behavior:auto; }
+  *,*::before,*::after{
+    animation-duration:.001ms !important; animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+  h1#wordmark .ltr{ opacity:1; transform:none; }
+  .hero-fade{ opacity:1; transform:none; animation-delay:0ms !important; }
+  .wipe::after{ transform:none; }
+  .tl-fill{ transform:scaleY(1); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- page background layers + grain -->
+<div id="bg-a" aria-hidden="true"></div>
+<div id="bg-b" aria-hidden="true"></div>
+<div id="progress" aria-hidden="true"></div>
+
+<!-- custom cursor -->
+<div id="cursor" aria-hidden="true"><div class="core"></div></div>
+
+<!-- transformation flash + alien name -->
+<div id="flash" aria-hidden="true"></div>
+<div id="alien-name" aria-hidden="true"></div>
+
+<!-- ==================================================================
+     NAV
+     ================================================================== -->
+<nav id="nav">
+  <div class="nav-links">
+    <a href="#problems">Problems</a>
+    <a href="#about">About</a>
+    <a href="#timeline">Timeline</a>
+  </div>
+
+  <a class="nav-logo" href="#top" aria-label="BIOBYTE home">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 1 3 8v8l9 7 9-7V8L12 1Zm0 4.6L17 10v4l-5 4.4L7 14v-4l5-4.4Z"/>
+      <circle cx="12" cy="12" r="2.1"/>
+    </svg>
+    BIOBYTE
+  </a>
+
+  <div class="nav-links">
+    <a href="#prizes">Prizes</a>
+    <a href="#faq">FAQ</a>
+    <a href="#register"><span class="pill" style="padding:9px 18px;font-size:.9rem">Join Us <span class="arr">↗</span></span></a>
+  </div>
+</nav>
+
+<!-- ==================================================================
+     HERO
+     ================================================================== -->
+<section id="top">
+<div id="hero" style="padding:0">
+  <div class="rings" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <svg class="net" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g stroke="#3E7A0B" stroke-opacity=".34" stroke-width="1">
+      <path d="M120 180 L340 120 L520 250 M340 120 L300 380 M520 250 L700 170 M700 170 L860 300 M860 300 L1040 190 M1040 190 L1220 280 M1220 280 L1360 170"/>
+      <path d="M60 640 L240 560 L420 700 M240 560 L200 820 M420 700 L620 600 M620 600 L800 740 M800 740 L1000 620 M1000 620 L1180 760 M1180 760 L1380 660"/>
+    </g>
+    <g fill="#3E7A0B" fill-opacity=".42">
+      <circle cx="120" cy="180" r="3.5"/><circle cx="340" cy="120" r="3.5"/><circle cx="520" cy="250" r="3.5"/>
+      <circle cx="700" cy="170" r="3.5"/><circle cx="860" cy="300" r="3.5"/><circle cx="1040" cy="190" r="3.5"/>
+      <circle cx="1220" cy="280" r="3.5"/><circle cx="1360" cy="170" r="3.5"/>
+      <circle cx="60" cy="640" r="3.5"/><circle cx="240" cy="560" r="3.5"/><circle cx="420" cy="700" r="3.5"/>
+      <circle cx="620" cy="600" r="3.5"/><circle cx="800" cy="740" r="3.5"/><circle cx="1000" cy="620" r="3.5"/>
+      <circle cx="1180" cy="760" r="3.5"/><circle cx="1380" cy="660" r="3.5"/>
+    </g>
+  </svg>
+
+  <button class="dial-hit" id="dial-hit" aria-label="Activate the Omnitrix"></button>
+
+  <div class="hero-inner">
+    <span class="label hero-fade" style="--d:0ms">Biotech</span>
+
+    <h1 id="wordmark" aria-label="BIOBYTE" data-name="BIOBYTE">BIOBYTE</h1>
+    <script>
+      /* Runs during parsing (before first paint) so the headline is never blank.
+         Without JS the plain "BIOBYTE" text in the markup stays visible. */
+      (function () {
+        var h = document.getElementById("wordmark");
+        var name = h.getAttribute("data-name") || h.textContent.trim();
+        h.textContent = "";
+        Array.prototype.forEach.call(name.split(""), function (ch, i) {
+          var s = document.createElement("span");
+          s.className = "ltr";
+          s.textContent = ch;
+          s.style.animationDelay = (110 + i * 80) + "ms";
+          h.appendChild(s);
+        });
+      })();
+    </script>
+
+    <span class="label hero-fade" id="hero-year" style="--d:90ms">Hackathon 2K26</span>
+
+    <p class="hero-fade" style="--d:180ms;max-width:46ch;margin-top:20px;color:#2E3A18;font-size:1.12rem" id="hero-blurb"></p>
+
+    <div class="hero-cta hero-fade" style="--d:260ms">
+      <a class="btn btn-dark" href="#register" data-open-gate>Register Now <span class="arr">↗</span></a>
+      <a class="btn btn-ghost" href="#problems">See the Problems</a>
+    </div>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true">
+    <span>Scroll to discover</span>
+    <svg width="16" height="22" viewBox="0 0 16 22" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 1v18M2 13l6 6 6-6"/></svg>
+  </div>
+
+  <button class="corner-btn help" id="help-btn" aria-label="What is this site?">?</button>
+  <button class="corner-btn sound" id="sound-btn" aria-label="Toggle ambient sound" aria-pressed="false">
+    <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+  </button>
+</div>
+</section>
+
+<!-- ==================================================================
+     ABOUT
+     ================================================================== -->
+<section id="about" class="section on-dark">
+  <div class="hexgrid" aria-hidden="true"></div>
+  <div class="aura" aria-hidden="true"></div>
+
+  <div class="container">
+    <div class="head">
+      <span class="label">About</span>
+      <span class="wipe" data-wipe>What We're Building</span>
+      <p class="about-blurb" id="about-blurb" style="margin-top:22px"></p>
+    </div>
+    <div class="about-grid" id="about-grid"></div>
+  </div>
+</section>
+
+<!-- ==================================================================
+     PROBLEM STATEMENTS
+     ================================================================== -->
+<section id="problems" class="section on-dark" style="padding-block:0">
+  <div class="panels" id="panels"></div>
+</section>
+
+<!-- ==================================================================
+     REGISTRATION
+     ================================================================== -->
+<section id="register" class="section on-dark">
+  <div class="hexgrid" aria-hidden="true" style="opacity:.18"></div>
+  <div class="container">
+    <div class="head center">
+      <span class="label">Registration</span>
+      <span class="wipe" data-wipe>Register</span>
+    </div>
+
+    <div class="gate" id="gate">
+      <div class="gate-bar">
+        <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>BIOBYTE_REGISTRATION</span>
+        <span class="st" id="gate-status">READY</span>
+      </div>
+
+      <div class="terminal-body" id="gate-body">
+
+        <!-- STAGE: gate closed -->
+        <div data-stage="locked">
+          <div class="notice">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#7CFF00" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 1 1 8 0v3"/></svg>
+            <span>Registration is limited to approved college email addresses. Sign in with Google and we will take it from there.</span>
+          </div>
+          <button class="pill" data-open-gate>Open Registration <span class="arr">↗</span></button>
+        </div>
+
+        <!-- STAGE: sign in -->
+        <div data-stage="signin" hidden>
+          <div class="notice">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#7CFF00" stroke-width="2"><path d="M4 7V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2"/><rect x="2" y="7" width="20" height="13" rx="2"/></svg>
+            <span>Use your Crescent email address. Other domains will be turned away at the next step.</span>
+          </div>
+          <button class="google-btn" id="google-btn">
+            <svg width="19" height="19" viewBox="0 0 48 48" aria-hidden="true">
+              <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.5 2.5 30.1 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.4 13.4 17.7 9.5 24 9.5Z"/>
+              <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-2.8-.4-4.1H24v7.8h12.7c-.3 2.1-1.6 5.2-4.7 7.3l7.6 5.9c4.4-4.1 6.9-10.1 6.9-16.9Z"/>
+              <path fill="#FBBC05" d="M10.4 28.7A14.4 14.4 0 0 1 9.7 24c0-1.6.3-3.2.7-4.7l-7.8-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.8-6.1Z"/>
+              <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2 1.4-4.8 2.4-8.3 2.4-6.3 0-11.6-3.9-13.9-9.7l-7.8 6.1C6.5 42.6 14.6 48 24 48Z"/>
+            </svg>
+            Continue with Google
+          </button>
+          <p id="signin-err" class="notice bad" hidden style="margin-top:14px"></p>
+        </div>
+
+        <!-- STAGE: verify email -->
+        <div data-stage="verify" hidden>
+          <div class="notice warn">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#FF7A00" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>
+            <span>We sent a verification link to <strong id="verify-email"></strong>. Open it, then come back here.</span>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="pill" id="resend-btn">Resend email</button>
+            <button class="pill mute" id="check-btn">I have verified <span class="spinner" id="check-spin" hidden></span></button>
+          </div>
+          <p id="verify-note" style="margin-top:14px;font-size:.9rem;color:rgba(232,255,232,.6)"></p>
+        </div>
+
+        <!-- STAGE: team form -->
+        <div data-stage="form" hidden>
+          <form id="team-form" novalidate>
+            <div class="row2">
+              <div class="field" data-f="teamName">
+                <label for="teamName">Team name</label>
+                <input id="teamName" name="teamName" autocomplete="off" placeholder="Biosignal" />
+                <span class="err" hidden></span>
+              </div>
+              <div class="field" data-f="college">
+                <label for="college">College</label>
+                <input id="college" name="college" autocomplete="organization" placeholder="Crescent Institute" />
+                <span class="err" hidden></span>
+              </div>
+            </div>
+
+            <div class="row2">
+              <div class="field" data-f="members">
+                <label for="members">Team size</label>
+                <select id="members" name="members">
+                  <option value="">Select</option>
+                  <option>2</option><option>3</option><option>4</option>
+                </select>
+                <span class="err" hidden></span>
+              </div>
+              <div class="field" data-f="problem">
+                <label for="problem">Problem track</label>
+                <select id="problem" name="problem"></select>
+                <span class="err" hidden></span>
+              </div>
+            </div>
+
+            <div class="members">
+              <h4>Member details</h4>
+              <div id="member-rows"></div>
+              <button type="button" class="pill mute" id="add-member" style="padding:9px 16px;font-size:.86rem">+ Add member</button>
+            </div>
+
+            <div class="field" data-f="abstract">
+              <label for="abstract">Approach in a few lines</label>
+              <textarea id="abstract" name="abstract" placeholder="What are you building, and how?"></textarea>
+              <span class="err" hidden></span>
+            </div>
+
+            <div class="field" data-f="ppt">
+              <label for="ppt">Round 1 deck (PPT)</label>
+              <input id="ppt" name="ppt" type="file" accept=".ppt,.pptx" style="padding:10px 12px" />
+              <span class="err" hidden></span>
+            </div>
+
+            <p class="notice" id="whoami" style="font-size:.88rem"></p>
+
+            <button class="pill" type="submit" id="submit-btn">Submit registration <span class="arr">↗</span></button>
+            <p id="submit-err" class="notice bad" hidden style="margin-top:14px"></p>
+          </form>
+        </div>
+
+        <!-- STAGE: success -->
+        <div data-stage="success" hidden>
+          <div class="notice">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#7CFF00" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>
+            <span>You are registered. Good luck.</span>
+          </div>
+          <button class="pill mute" id="register-again">Back to the site</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================================================================
+     TIMELINE
+     ================================================================== -->
+<section id="timeline" class="section on-dark">
+  <div class="container">
+    <div class="head">
+      <span class="label">Rules &amp; Timeline</span>
+      <span class="wipe" data-wipe>How It Works</span>
+    </div>
+
+    <div class="tl-wrap">
+      <div class="tl-line" aria-hidden="true"><div class="tl-fill" id="tl-fill"></div></div>
+      <div id="tl-items"></div>
+    </div>
+
+    <div class="rules" id="rules"></div>
+  </div>
+</section>
+
+<!-- ==================================================================
+     PRIZES
+     ================================================================== -->
+<section id="prizes" class="section on-dark">
+  <div class="hexgrid" aria-hidden="true" style="opacity:.16"></div>
+  <div class="container" style="position:relative">
+    <div class="head center">
+      <span class="label">Prizes</span>
+      <span class="wipe" data-wipe>What You Can Win</span>
+    </div>
+    <div class="podium" id="podium"></div>
+  </div>
+</section>
+
+<!-- ==================================================================
+     FAQ
+     ================================================================== -->
+<section id="faq" class="section on-light">
+  <div class="container">
+    <div class="head center">
+      <span class="label" style="color:#3E7A0B">FAQ</span>
+      <span class="wipe" data-wipe>Good Questions</span>
+    </div>
+    <div class="faq-list" id="faq-list"></div>
+  </div>
+</section>
+
+<!-- ==================================================================
+     FINAL CTA + FOOTER
+     ================================================================== -->
+<section id="cta">
+  <div class="rings" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="container" style="position:relative">
+    <h2>Activate the Omnitrix</h2>
+    <p id="cta-sub"></p>
+    <a class="btn btn-dark" href="#register" data-open-gate>Register Now <span class="arr">↗</span></a>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <h4>BIOBYTE</h4>
+        <p id="foot-blurb"></p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#problems">Problems</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#timeline">Timeline</a></li>
+          <li><a href="#prizes">Prizes</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Coordinators</h4>
+        <ul id="foot-people"></ul>
+      </div>
+      <div>
+        <h4>Reach Us</h4>
+        <p id="foot-place"></p>
+      </div>
+    </div>
+    <div class="foot-base">
+      <span>Fan-made theme inspired by Ben 10. Not affiliated with Cartoon Network.</span>
+      <span id="foot-year"></span>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================================================================
+     HELP DIALOG
+     ================================================================== -->
+<dialog id="help-dlg" style="border:none;border-radius:18px;padding:0;max-width:440px;width:92vw;background:#0F1A08;color:#E8FFE8">
+  <div style="padding:26px">
+    <h3 style="font-family:var(--font-display);font-size:1.6rem;text-transform:uppercase;margin-bottom:10px">What is BIOBYTE?</h3>
+    <p style="color:rgba(232,255,232,.78);font-size:1rem">A one-day biotechnology hackathon by Crescent Technocrats Club. Teams of two to four pick one of five problem tracks, then build and demo a working tool on the same day.</p>
+    <button class="pill" id="help-close" style="margin-top:20px">Got it</button>
+  </div>
+</dialog>
+
+<script type="module">
+/* ==================================================================
+   CONFIG — edit here
+   ================================================================== */
+
+const CONFIG = {
+  event: {
+    name: (document.getElementById("wordmark") || {}).dataset
+      ? document.getElementById("wordmark").dataset.name
+      : "BIOBYTE",
+    tagline: "Activate Ideas. Transform Biology.",
+    presenter: "Crescent Technocrats Club",
+    blurb: "A one-day biotech hackathon. Teams build working tools for real problems in bioprocessing, imaging and drug discovery, then demo them the same day.",
+    year: "2K26",
+    time: "9:00 AM - 4:10 PM",
+    teamSize: "2 to 4 members",
+    roundOne: "Free registration + PPT submission",
+    roundTwo: "To be announced",
+    date: "To be announced",
+    venue: "To be announced",
+  },
+
+  /* Which section background each section shows */
+  backgrounds: {
+    hero:      "linear-gradient(140deg, #EAFBE0 0%, #D6F9C0 38%, #B6FF5C 100%)",
+    about:     "radial-gradient(ellipse 60% 50% at 50% 50%, #12210C 0%, #070A05 70%)",
+    problems:  "radial-gradient(ellipse 70% 55% at 50% 40%, #0C1A08 0%, #070A05 72%)",
+    register:  "radial-gradient(ellipse 65% 55% at 50% 45%, #0F1A08 0%, #070A05 72%)",
+    timeline:  "linear-gradient(180deg, #070A05 0%, #0C1A08 60%, #12210C 100%)",
+    prizes:    "radial-gradient(ellipse 60% 50% at 50% 50%, #101B09 0%, #070A05 72%)",
+    faq:       "linear-gradient(160deg, #EAFBE0 0%, #D8F7C4 55%, #C6F5AE 100%)",
+    cta:       "linear-gradient(140deg, #B6FF5C 0%, #7CFF00 52%, #EAFBE0 100%)",
+  },
+
+  navTheme: { hero:"nav-light", about:"nav-dark", problems:"nav-dark", register:"nav-dark", timeline:"nav-dark", prizes:"nav-dark", faq:"nav-light", cta:"nav-light" },
+
+  /* Five problem statements, each paired with an alien */
+  problems: [
+    { id:"CF-01", alien:"Upgrade",     domain:"Bioprocess Engineering",
+      title:"Digital Twin for Industrial Bioreactors",
+      summary:"Fuse first-principles models, microbial kinetics, live sensor feeds and historical fermentation data into a twin that predicts growth and product formation continuously, then runs what-if simulations.",
+      points:["Continuous prediction of growth and metabolite output","Early detection of process deviations","What-if simulation for feeding and aeration"] },
+    { id:"CF-02", alien:"Grey Matter", domain:"Computer Vision / Bio-imaging",
+      title:"AI-Based Microscopy Analysis",
+      summary:"Read micrographs end to end. Detect, count, classify and identify cell abnormalities, then report through annotated output or a dashboard a technician can actually use.",
+      points:["Detect, count, classify and identify abnormalities","Analyse size, shape, morphology and distribution","Annotated output or a dashboard"] },
+    { id:"CF-03", alien:"Heatblast",   domain:"IoT / Process Control",
+      title:"Smart Fermentation Monitoring System",
+      summary:"Pull real-time multi-parameter sensing together into one view, predict microbial growth, and recommend the adjustments that cut operator intervention.",
+      points:["Real-time multi-parameter sensing and fusion","Predict growth and estimate product formation","Recommend adjustments to reduce intervention"] },
+    { id:"CF-04", alien:"Diamondhead", domain:"Environmental Science / ML",
+      title:"Heavy Metals Sedimentation Predictor",
+      summary:"Fuse soil, chemical and biological signals into a single model that flags high-risk zones from previously collected data, while staying efficient and fully integrated.",
+      points:["Fuse soil, chemical and biological signals","Detect high-risk zones from collected data","Efficient, data-consistent, fully integrated"] },
+    { id:"CF-05", alien:"Ghostfreak",  domain:"Computational Biology / AI-ML",
+      title:"AI-Assisted Drug Repurposing Candidates",
+      summary:"Analyse drug-target interactions and molecular properties, then output a ranked, prioritised shortlist of candidates worth taking further.",
+      points:["Analyse drug-target interactions and molecular properties","Use bioinformatics, docking, network analysis or AI/ML","A ranked, prioritised shortlist"] },
+  ],
+
+  /* Alien colourways: [a, b, c] */
+  aliens: {
+    Upgrade:     ["#7CFF00", "#050A03", "#B6FF5C"],
+    "Grey Matter":["#9AA8A0", "#101614", "#D8F5DC"],
+    Heatblast:   ["#FF7A00", "#180602", "#FFC46B"],
+    Diamondhead: ["#2EE6D6", "#02171B", "#8CF3FF"],
+    Ghostfreak:  ["#7B3FD4", "#0B0418", "#B6FF7A"],
+  },
+
+  pillars: [
+    { t:"Explore", p:"Scan real biotech frontiers: bioprocess, imaging, fermentation, environmental sensing and drug discovery." },
+    { t:"Decode",  p:"Turn raw biological and industrial data into signals a human team can read and trust." },
+    { t:"Build",   p:"Ship a working prototype in a single day. Real pipelines, real models, a real interface." },
+    { t:"Impact",  p:"Prove the outcome. A solution only counts when it moves yield, safety, cost or lives." },
+  ],
+
+  timeline: [
+    { step:"01", t:"Register",        p:"Verify your Crescent email and register your team." },
+    { step:"02", t:"Submit PPT",      p:"Present your approach through a Round 1 deck." },
+    { step:"03", t:"Shortlisting",    p:"Judges select the teams advancing to Round 2." },
+    { step:"04", t:"Round 2 Build",   p:"Build a working prototype on the challenge track." },
+    { step:"05", t:"Final Demo",      p:"Demo your solution to the panel and the floor." },
+  ],
+
+  rules: [
+    "Open to all students across departments and institutions.",
+    "Team size must be between 2 and 4 members.",
+    "Round 1 registration is completely free.",
+    "Round 1 requires a PPT submission from every team.",
+    "Selected teams advance to Round 2.",
+    "Round 2 fee is to be announced.",
+    "Event runs from 9:00 AM to 4:10 PM.",
+  ],
+
+  prizes: [
+    { place:"1st", amt:"To be announced", note:"Grand prize for the strongest working build", first:true },
+    { place:"2nd", amt:"To be announced", note:"Runner-up across all five tracks" },
+    { place:"3rd", amt:"To be announced", note:"Third place, plus track awards" },
+  ],
+
+  faqs: [
+    { q:"Who can participate?", a:"Any student with a Crescent email address. All departments and institutions are welcome." },
+    { q:"What is the team size?", a:"Between 2 and 4 members per team. Register the full team together." },
+    { q:"Is registration free?", a:"Yes. Round 1 registration is free. A fee applies only if your team advances to Round 2." },
+    { q:"What is required in Round 1?", a:"A PPT submission that explains your approach to the chosen problem statement." },
+    { q:"What happens in Round 2?", a:"Shortlisted teams build a working prototype, then present it in the final demo." },
+    { q:"What are the event timings?", a:"9:00 AM to 4:10 PM on event day, for both rounds." },
+  ],
+
+  people: [
+    { n:"Hameed Afsar",   r:"CEO", p:"9489475038" },
+    { n:"Mehar Basha",    r:"COO", p:"6379155839" },
+    { n:"Merfin Hanson",  r:"CTO", p:"7010416207" },
+    { n:"Dr. Karthikeyan Ramalingam", r:"Dean of Student Affairs" },
+    { n:"Dr. Aisha Banu", r:"Club Coordinator" },
+  ],
+
+  /* Firebase — identical to the React app */
+  firebase: {
+    apiKey: "AIzaSyBP8Gq2rJixcEioJFsnEUkzAJdoDpQngr0",
+    authDomain: "ben10-cc356.firebaseapp.com",
+    projectId: "ben10-cc356",
+    storageBucket: "ben10-cc356.firebasestorage.app",
+    messagingSenderId: "978523355225",
+    appId: "1:978523355225:web:fb076afcbf20c432211948",
+  },
+  firebaseVersion: "10.12.2",
+
+  allowedEmails: [
+    "240071601217@crescent.education",
+    "yourcollegeemail@gmail.com",
+    "anotherapprovedid@gmail.com",
+  ],
+  allowedDomains: ["crescent.education", "crescenttechnocrats.club"],
+};
+
+const $  = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ==================================================================
+   RENDER — copy
+   ================================================================== */
+
+$("#hero-blurb").textContent = CONFIG.event.blurb;
+$("#hero-year").textContent = "Hackathon " + CONFIG.event.year;
+$("#about-blurb").textContent =
+  CONFIG.event.blurb + " Five problem tracks, one day, and a working demo at the end of it.";
+$("#cta-sub").textContent =
+  CONFIG.event.presenter + " is running " + CONFIG.event.name + " " + CONFIG.event.year +
+  ". Pick a track, bring a team of " + CONFIG.event.teamSize + ", and build something that runs.";
+$("#foot-blurb").textContent = CONFIG.event.blurb;
+$("#foot-year").textContent = CONFIG.event.name + " " + CONFIG.event.year + " · " + CONFIG.event.presenter;
+$("#foot-place").textContent = "Date: " + CONFIG.event.date + " · Venue: " + CONFIG.event.venue;
+
+/* wordmark letters */
+{
+  const wm = $("#wordmark");
+  if (wm.querySelector(".ltr")) throw "wordmark already split";
+  [...CONFIG.event.name].forEach((ch, i) => {
+    const s = document.createElement("span");
+    s.className = "ltr";
+    s.textContent = ch;
+    s.style.animationDelay = (110 + i * 80) + "ms";
+    wm.appendChild(s);
+  });
+}
+
+/* about cards */
+$("#about-grid").innerHTML = CONFIG.pillars.map((p, i) => `
+  <article class="about-card" data-reveal>
+    <span class="label" style="color:#7CFF00;font-size:.62rem">${String(i + 1).padStart(2, "0")}</span>
+    <h3>${p.t}</h3>
+    <p>${p.p}</p>
+  </article>`).join("");
+
+/* alien panels */
+$("#panels").innerHTML = CONFIG.problems.map((p, i) => {
+  const c = CONFIG.aliens[p.alien];
+  const dial = [0, 45, 90, 135, 180][i];
+  return `
+  <article class="panel" data-alien="${p.alien}" data-dial="${dial}"
+           style="--pa:${c[0]};--pb:${c[1]};--pc:${c[2]}">
+    <svg class="dial" viewBox="0 0 200 200" aria-hidden="true">
+      <circle cx="100" cy="100" r="92" fill="none" stroke="currentColor" stroke-width="2"/>
+      <circle cx="100" cy="100" r="66" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="6 10"/>
+      <circle cx="100" cy="100" r="38" fill="none" stroke="currentColor" stroke-width="1"/>
+      <path d="M100 8 100 60 100 140 100 192" stroke="currentColor" stroke-width="2"/>
+      <path d="M8 100 60 100 140 100 192 100" stroke="currentColor" stroke-width="2"/>
+    </svg>
+    <div class="container panel-body">
+      <div class="panel-num">0${i + 1}</div>
+      <div>
+        <span class="panel-tag"><i class="dot"></i>${p.alien}</span>
+        <h3>${p.title}</h3>
+        <p>${p.summary}</p>
+        <ul class="pts">${p.points.map(t => `<li>${t}</li>`).join("")}</ul>
+      </div>
+    </div>
+  </article>`;
+}).join("");
+
+/* problem select */
+$("#problem").innerHTML = '<option value="">Select a track</option>' +
+  CONFIG.problems.map(p => `<option>${p.id} — ${p.title}</option>`).join("");
+
+/* timeline */
+$("#tl-items").innerHTML = CONFIG.timeline.map(s => `
+  <div class="tl-item" data-tl>
+    <span class="tl-dot" aria-hidden="true"></span>
+    <span class="step">${s.step}</span>
+    <h3>${s.t}</h3>
+    <p>${s.p}</p>
+  </div>`).join("");
+
+$("#rules").innerHTML = CONFIG.rules.map((r, i) =>
+  `<div class="rule"><span class="n">${String(i + 1).padStart(2, "0")}</span><span>${r}</span></div>`).join("");
+
+/* prizes */
+$("#podium").innerHTML = CONFIG.prizes.map(p => `
+  <div class="pod${p.first ? " first" : ""}" data-reveal>
+    <div class="place">${p.place}</div>
+    <div class="amt">${p.amt}</div>
+    <div class="note">${p.note}</div>
+  </div>`).join("");
+
+/* faq */
+$("#faq-list").innerHTML = CONFIG.faqs.map((f, i) => `
+  <div class="faq">
+    <button class="faq-q" aria-expanded="false">
+      <span class="idx">0${i + 1}</span><span>${f.q}</span>
+      <svg class="chev" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="faq-a"><p>${f.a}</p></div>
+  </div>`).join("");
+
+$("#foot-people").innerHTML = CONFIG.people.map(p =>
+  `<li>${p.n} — ${p.r}${p.p ? ` · <a href="tel:${p.p}">${p.p}</a>` : ""}</li>`).join("");
+
+/* ==================================================================
+   BACKGROUND MORPH + NAV THEME
+   ================================================================== */
+
+const bgA = $("#bg-a");
+const bgB = $("#bg-b");
+
+/* Crossfade onto the idle layer, then swap roles. The outgoing layer keeps
+   its gradient while it fades, so there is never a transparent gap. */
+let bgFront = bgA;
+let bgIdle = bgB;
+bgFront.style.opacity = "1";
+
+function setBackground(grad) {
+  bgIdle.style.backgroundImage = grad;
+  bgIdle.style.opacity = "1";
+  bgFront.style.opacity = "0";
+  const swap = bgFront;
+  bgFront = bgIdle;
+  bgIdle = swap;
+}
+
+const bgMap = [
+  ["top", CONFIG.backgrounds.hero],
+  ["about", CONFIG.backgrounds.about],
+  ["problems", CONFIG.backgrounds.problems],
+  ["register", CONFIG.backgrounds.register],
+  ["timeline", CONFIG.backgrounds.timeline],
+  ["prizes", CONFIG.backgrounds.prizes],
+  ["faq", CONFIG.backgrounds.faq],
+  ["cta", CONFIG.backgrounds.cta],
+];
+
+const navLinkFor = {};
+$$("#nav a[href^='#']").forEach(a => { navLinkFor[a.getAttribute("href").slice(1)] = a; });
+
+function setNavTheme(key) {
+  const cls = CONFIG.navTheme[key] || "nav-light";
+  document.body.classList.remove("nav-dark", "nav-light");
+  document.body.classList.add(cls);
+}
+
+function setActiveLink(id) {
+  $$("#nav a[href^='#']").forEach(a => a.classList.remove("active"));
+  const a = navLinkFor[id];
+  if (a) a.classList.add("active");
+}
+
+/* Section observer: background + nav theme */
+const sectionEls = new Map(bgMap.map(([id]) => [id, document.getElementById(id)]));
+const panels = $$(".panel");
+
+const secObs = new IntersectionObserver((entries) => {
+  entries.forEach((en) => {
+    if (!en.isIntersecting) return;
+    const id = en.target.id;
+    const grad = CONFIG.backgrounds[id];
+    if (grad) setBackground(grad);
+    setNavTheme(id);
+    setActiveLink(id);
+  });
+}, { rootMargin: "-45% 0px -45% 0px", threshold: 0 });
+sectionEls.forEach(el => el && secObs.observe(el));
+
+/* Alien panel observer: dial lock + active wash */
+const panelObs = new IntersectionObserver((entries) => {
+  entries.forEach((en) => {
+    const on = en.isIntersecting && en.intersectionRatio > 0.45;
+    en.target.classList.toggle("is-active", on);
+    if (on) en.target.style.setProperty("--dial", en.target.dataset.dial + "deg");
+  });
+}, { threshold: [0.45, 0.7] });
+panels.forEach(p => panelObs.observe(p));
+
+/* ==================================================================
+   SCROLL: progress bar + timeline draw
+   ================================================================== */
+
+const progress = $("#progress");
+const tlFill = $("#tl-fill");
+const tlItems = $$("[data-tl]");
+let ticking = false;
+
+function onScroll() {
+  if (ticking) return;
+  ticking = true;
+  requestAnimationFrame(() => {
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - doc.clientHeight;
+    progress.style.transform = `scaleX(${max > 0 ? doc.scrollTop / max : 0})`;
+
+    /* timeline line draws across the section */
+    const wrap = $(".tl-wrap");
+    if (wrap) {
+      const r = wrap.getBoundingClientRect();
+      const vh = innerHeight;
+      const start = vh * 0.82;
+      const end = -r.height + vh * 0.55;
+      const p = Math.min(1, Math.max(0, (start - r.top) / Math.max(1, start - end)));
+      tlFill.style.transform = `scaleY(${REDUCED ? 1 : p})`;
+      tlItems.forEach((it, i) => {
+        const ir = it.getBoundingClientRect();
+        it.classList.toggle("lit", ir.top < vh * 0.78);
+        void i;
+      });
+    }
+    ticking = false;
+  });
+}
+addEventListener("scroll", onScroll, { passive: true });
+addEventListener("resize", onScroll, { passive: true });
+
+/* ==================================================================
+   REVEAL + WIPE
+   ================================================================== */
+
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(en => {
+    if (en.isIntersecting) { en.target.classList.add("in"); revealObs.unobserve(en.target); }
+  });
+}, { threshold: 0.2 });
+$$("[data-reveal],[data-wipe]").forEach(el => revealObs.observe(el));
+
+/* ==================================================================
+   CUSTOM CURSOR
+   ================================================================== */
+
+if (matchMedia("(hover:hover) and (pointer:fine)").matches && !REDUCED) {
+  const cur = $("#cursor");
+  let x = innerWidth / 2, y = innerHeight / 2, cx = x, cy = y;
+  addEventListener("pointermove", e => { x = e.clientX; y = e.clientY; }, { passive: true });
+  (function tick() {
+    cx += (x - cx) * 0.22; cy += (y - cy) * 0.22;
+    cur.style.transform = `translate(${cx}px, ${cy}px)`;
+    requestAnimationFrame(tick);
+  })();
+  addEventListener("pointerover", e => {
+    document.body.classList.add("cursor-ready");
+    const hot = e.target.closest("a,button,.faq,.pod,.about-card");
+    document.body.classList.toggle("cursor-hot", !!hot);
+  });
+}
+
+/* ==================================================================
+   TRANSFORMATION DIAL
+   ================================================================== */
+
+const flash = $("#flash");
+const alienOut = $("#alien-name");
+
+$("#dial-hit").addEventListener("click", () => {
+  if (REDUCED) return;
+  const pick = CONFIG.problems[Math.floor(Math.random() * CONFIG.problems.length)].alien;
+  flash.style.opacity = "1";
+  setTimeout(() => { flash.style.opacity = "0"; }, 130);
+  alienOut.textContent = pick;
+  alienOut.classList.add("show");
+  setTimeout(() => alienOut.classList.remove("show"), 1500);
+});
+
+/* corner buttons */
+$("#help-btn").addEventListener("click", () => $("#help-dlg").showModal());
+$("#help-close").addEventListener("click", () => $("#help-dlg").close());
+$("#sound-btn").addEventListener("click", e => {
+  const b = e.currentTarget;
+  const muted = b.classList.toggle("muted");
+  b.setAttribute("aria-pressed", String(!muted));
+});
+
+/* FAQ accordion */
+$$(".faq-q").forEach(btn => btn.addEventListener("click", () => {
+  const item = btn.closest(".faq");
+  const open = item.classList.toggle("open");
+  btn.setAttribute("aria-expanded", String(open));
+}));
+
+/* ==================================================================
+   REGISTRATION — same Firebase project, same rules as the React app
+   ================================================================== */
+
+let fb = null;
+let pollTimer = null;
+
+async function loadFirebase() {
+  if (fb) return fb;
+  const v = CONFIG.firebaseVersion;
+  const base = `https://www.gstatic.com/firebasejs/${v}/`;
+  const [appMod, authMod, fsMod, stMod] = await Promise.all([
+    import(base + "firebase-app.js"),
+    import(base + "firebase-auth.js"),
+    import(base + "firebase-firestore.js"),
+    import(base + "firebase-storage.js"),
+  ]);
+  const app = appMod.initializeApp(CONFIG.firebase);
+  fb = {
+    auth: authMod.getAuth(app),
+    db: fsMod.getFirestore(app),
+    storage: stMod.getStorage(app),
+    ...authMod, ...fsMod, ...stMod,
+  };
+  return fb;
+}
+
+function isAllowedEmail(email) {
+  if (!email) return false;
+  const lower = String(email).toLowerCase().trim();
+  if (CONFIG.allowedEmails.includes(lower)) return true;
+  const domain = lower.split("@")[1];
+  return !!domain && CONFIG.allowedDomains.includes(domain);
+}
+
+const gate = $("#gate");
+const gateStatus = $("#gate-status");
+
+function showStage(name, status) {
+  $$("[data-stage]", gate).forEach(el => { el.hidden = el.dataset.stage !== name; });
+  gateStatus.textContent = status || name.toUpperCase();
+}
+
+let currentUser = null;
+
+async function handleAuthed(user) {
+  currentUser = user;
+  if (!user) { showStage("locked", "LOCKED"); return; }
+
+  if (!isAllowedEmail(user.email)) {
+    await fb.auth.signOut();
+    showStage("signin", "DENIED");
+    const err = $("#signin-err");
+    err.hidden = false;
+    err.textContent = `${user.email} is not an approved address. Registration is limited to ${CONFIG.allowedDomains.join(" and ")}.`;
+    return;
+  }
+  if (!user.emailVerified) {
+    $("#verify-email").textContent = user.email;
+    showStage("verify", "VERIFY");
+    startVerifyPoll();
+    return;
+  }
+  stopVerifyPoll();
+  $("#whoami").textContent = `Submitting as ${user.email}.`;
+  buildMemberRows(2);
+  showStage("form", "FORM");
+}
+
+/* --- verification polling --- */
+function startVerifyPoll() {
+  stopVerifyPoll();
+  $("#verify-note").textContent = "Waiting for verification…";
+  pollTimer = setInterval(async () => {
+    if (!currentUser) return stopVerifyPoll();
+    try {
+      await currentUser.reload();
+      if (currentUser.emailVerified) { stopVerifyPoll(); handleAuthed(currentUser); }
+    } catch { /* transient */ }
+  }, 2500);
+}
+function stopVerifyPoll() { if (pollTimer) { clearInterval(pollTimer); pollTimer = null; } }
+
+async function sendVerification() {
+  if (!currentUser) return;
+  try {
+    await fb.sendEmailVerification(currentUser);
+    $("#verify-note").textContent = "Link sent. Open it on this device, then press the button.";
+  } catch (e) {
+    $("#verify-note").textContent = "Could not send the email: " + e.message;
+  }
+}
+
+/* --- member rows --- */
+let memberCount = 0;
+function buildMemberRows(n) {
+  memberCount = n;
+  $("#member-rows").innerHTML = Array.from({ length: n }, (_, i) => `
+    <div class="member-row" data-member="${i}">
+      <div class="who">Member ${i + 1}</div>
+      <div class="row2">
+        <input data-m="name" placeholder="Full name" aria-label="Member ${i + 1} name" />
+        <input data-m="phone" placeholder="Phone" inputmode="tel" aria-label="Member ${i + 1} phone" />
+      </div>
+      <div class="row2" style="margin-top:10px">
+        <input data-m="department" placeholder="Department" aria-label="Member ${i + 1} department" />
+        <input data-m="year" placeholder="Year of study" aria-label="Member ${i + 1} year" />
+      </div>
+    </div>`).join("");
+}
+$("#add-member").addEventListener("click", () => {
+  if (memberCount >= 4) return;
+  buildMemberRows(memberCount + 1);
+});
+$("#members").addEventListener("change", e => buildMemberRows(Number(e.target.value) || 2));
+
+/* --- validation --- */
+function setErr(name, msg) {
+  const field = $(`.field[data-f="${name}"]`, gate);
+  if (!field) return;
+  field.classList.toggle("bad", !!msg);
+  const el = $(".err", field);
+  if (el) { el.hidden = !msg; el.textContent = msg || ""; }
+}
+
+function validate(v) {
+  let ok = true;
+  const req = (n, m) => { setErr(n, m); if (m) ok = false; };
+  req("teamName", v.teamName.trim() ? "" : "Give your team a name.");
+  req("college", v.college.trim() ? "" : "Which college are you from?");
+  req("members", v.members ? "" : "Pick a team size.");
+  req("problem", v.problem ? "" : "Choose a problem track.");
+  req("abstract", v.abstract.trim().length >= 12 ? "" : "A sentence or two, please.");
+  req("ppt", v.ppt ? "" : "Attach your Round 1 deck.");
+  if (v.members && (Number(v.members) < 2 || Number(v.members) > 4)) { req("members", "Teams are 2 to 4."); }
+  return ok;
+}
+
+/* --- submit --- */
+$("#team-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const errBox = $("#submit-err");
+  errBox.hidden = true;
+
+  const memberDetails = $$("[data-member]").map(row => ({
+    name: $('[data-m="name"]', row).value.trim(),
+    phone: $('[data-m="phone"]', row).value.trim(),
+    department: $('[data-m="department"]', row).value.trim(),
+    year: $('[data-m="year"]', row).value.trim(),
+  }));
+
+  const ppt = $("#ppt").files[0] || null;
+
+  const values = {
+    teamName: $("#teamName").value,
+    college: $("#college").value,
+    members: $("#members").value,
+    problem: $("#problem").value,
+    abstract: $("#abstract").value,
+    ppt,
+  };
+
+  if (!validate(values)) {
+    errBox.hidden = false;
+    errBox.textContent = "Fix the highlighted fields and try again.";
+    return;
+  }
+
+  const btn = $("#submit-btn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Submitting…';
+
+  try {
+    const record = fb.db.collection("registrations").doc();
+
+    let pptUrl = null;
+    if (ppt) {
+      const safeName = ppt.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const path = `registrations/${record.id}/${Date.now()}-${safeName}`;
+      const uploaded = await fb.uploadBytes(fb.storage.ref(fb.storage, path), ppt, {
+        contentType: ppt.type || "application/octet-stream",
+      });
+      pptUrl = await fb.getDownloadURL(uploaded.ref);
+    }
+
+    await record.set({
+      uid: currentUser?.uid ?? null,
+      teamName: values.teamName.trim(),
+      collegeName: values.college.trim(),
+      teamMembers: Number(values.members),
+      memberDetails,
+      emailId: currentUser?.email ?? "",
+      problemStatement: values.problem,
+      abstract: values.abstract.trim(),
+      pptUrl,
+      pptName: ppt?.name ?? null,
+      round: "round-1",
+      status: "registered",
+      createdAt: fb.serverTimestamp(),
+    });
+
+    showStage("success", "COMPLETE");
+  } catch (err) {
+    errBox.hidden = false;
+    errBox.textContent = "Could not save your registration: " + err.message;
+    btn.disabled = false;
+    btn.innerHTML = 'Submit registration <span class="arr">↗</span>';
+  }
+});
+
+/* --- gate wiring --- */
+let verified = false;
+
+async function openGate() {
+  gateStatus.textContent = "LINKING";
+  try {
+    await loadFirebase();
+  } catch (e) {
+    gateStatus.textContent = "OFFLINE";
+    const err = $("#signin-err");
+    err.hidden = false;
+    err.textContent = "Could not load Firebase (" + e.message + "). Serve this file over http and check your connection.";
+    showStage("signin", "ERROR");
+    return;
+  }
+  fb.auth.onAuthStateChanged(fb.auth, async (user) => {
+    if (user && verified) { verified = false; handleAuthed(user); return; }
+    if (user) handleAuthed(user);
+    else showStage("locked", "LOCKED");
+  });
+}
+
+$$("[data-open-gate]").forEach(b => b.addEventListener("click", e => {
+  if (b.tagName !== "A") e.preventDefault();
+  const gateBox = $("#register");
+  gateBox.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "center" });
+  openGate();
+}));
+
+$("#google-btn").addEventListener("click", async (e) => {
+  const b = e.currentTarget;
+  b.disabled = true;
+  b.innerHTML = '<span class="spinner"></span> Opening Google…';
+  try {
+    const res = await fb.signInWithPopup(fb.auth, fb.GoogleAuthProvider);
+    verified = true;
+    await handleAuthed(res.user);
+  } catch (err) {
+    const box = $("#signin-err");
+    box.hidden = false;
+    box.textContent = "Sign-in failed: " + err.message;
+  } finally {
+    b.disabled = false;
+    b.innerHTML = '<svg width="19" height="19" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.5 2.5 30.1 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.4 13.4 17.7 9.5 24 9.5Z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-2.8-.4-4.1H24v7.8h12.7c-.3 2.1-1.6 5.2-4.7 7.3l7.6 5.9c4.4-4.1 6.9-10.1 6.9-16.9Z"/><path fill="#FBBC05" d="M10.4 28.7A14.4 14.4 0 0 1 9.7 24c0-1.6.3-3.2.7-4.7l-7.8-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.8-6.1Z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2 1.4-4.8 2.4-8.3 2.4-6.3 0-11.6-3.9-13.9-9.7l-7.8 6.1C6.5 42.6 14.6 48 24 48Z"/></svg> Continue with Google';
+  }
+});
+
+$("#resend-btn").addEventListener("click", sendVerification);
+$("#check-btn").addEventListener("click", async (e) => {
+  const b = e.currentTarget;
+  $("#check-spin").hidden = false;
+  try {
+    await currentUser.reload();
+    if (currentUser.emailVerified) { stopVerifyPoll(); await handleAuthed(currentUser); }
+    else $("#verify-note").textContent = "Not verified yet. Open the link in your inbox first.";
+  } catch { $("#verify-note").textContent = "Could not check. Try again."; }
+  finally { $("#check-spin").hidden = true; }
+});
+
+$("#register-again").addEventListener("click", () => {
+  fb?.auth?.signOut();
+  showStage("locked", "LOCKED");
+  $("#top").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
+});
+
+/* initial paint */
+showStage("locked", "LOCKED");
+onScroll();
+setBackground(CONFIG.backgrounds.hero);
+setNavTheme("hero");
+</script>
+</body>
+</html>

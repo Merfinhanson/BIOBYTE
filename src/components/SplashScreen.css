@@ -1,0 +1,437 @@
+/* ============================================================
+   SPLASH SCREEN — Omnitrix activation sequence
+   ============================================================ */
+
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 24px;
+  background-color: var(--color-bg);
+  background-image: radial-gradient(
+      circle at 50% 42%,
+      rgba(124, 255, 0, 0.18),
+      transparent 55%
+    ),
+    radial-gradient(circle at 50% 120%, rgba(124, 255, 0, 0.1), transparent 45%);
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity var(--splash-exit, 600ms) var(--ease-in-out),
+    transform var(--splash-exit, 600ms) var(--ease-in-out),
+    filter var(--splash-exit, 600ms) var(--ease-in-out);
+}
+
+/* Exit: charge complete, core collapses into a flash */
+.splash-screen.is-exiting {
+  opacity: 0;
+  transform: scale(1.14);
+  filter: brightness(2.4) blur(3px);
+}
+
+/* ---------------------------------------------------------
+   Ambient layers
+   --------------------------------------------------------- */
+
+.splash-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    transparent 38%,
+    rgba(7, 10, 5, 0.92) 92%
+  );
+}
+
+.splash-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 180px;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(124, 255, 0, 0.07) 45%,
+    rgba(124, 255, 0, 0.14) 50%,
+    rgba(124, 255, 0, 0.07) 55%,
+    transparent
+  );
+  animation: bb-scan 2.6s linear infinite;
+}
+
+.splash-sparks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.splash-spark {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--color-glow-green);
+  box-shadow: 0 0 0 3px var(--green-14);
+  animation-name: bb-spark-rise;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes bb-spark-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.6);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-52px) scale(1);
+  }
+}
+
+/* ---------------------------------------------------------
+   Omnitrix core
+   --------------------------------------------------------- */
+
+.splash-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  display: grid;
+  place-items: center;
+}
+
+.core-halo {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(124, 255, 0, 0.22),
+    transparent 62%
+  );
+  filter: blur(6px);
+  animation: bb-core-breathe 2.2s var(--ease-in-out) infinite;
+}
+
+.core-pulse {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 2px solid var(--green-50);
+  opacity: 0;
+  animation: bb-core-pulse 2.4s var(--ease-out) infinite;
+}
+
+.core-pulse-b {
+  animation-delay: 1.2s;
+}
+
+@keyframes bb-core-pulse {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.55);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+
+.core-ring {
+  position: absolute;
+  border-radius: 50%;
+}
+
+/* outer: spinning arc */
+.core-ring-outer {
+  width: 320px;
+  height: 320px;
+  border: 2px solid transparent;
+  border-top-color: var(--color-main-green);
+  border-right-color: var(--green-30);
+  box-shadow: 0 0 26px -8px var(--green-70);
+  animation: bb-spin 5.5s linear infinite;
+}
+
+/* mid: counter-rotating dashed ring */
+.core-ring-mid {
+  width: 244px;
+  height: 244px;
+  border: 2px dashed var(--green-50);
+  opacity: 0.75;
+  animation: bb-spin 9s linear infinite reverse;
+}
+
+/* inner: solid glowing containment ring */
+.core-ring-inner {
+  width: 168px;
+  height: 168px;
+  border: 2px solid var(--color-glow-green);
+  box-shadow: 0 0 20px -8px var(--green-70), inset 0 0 18px -12px var(--green-70);
+  animation: bb-pulse-glow 2.2s var(--ease-in-out) infinite;
+}
+
+.core-dot {
+  position: absolute;
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 38% 34%,
+    #ffffff,
+    var(--color-glow-green) 38%,
+    var(--color-main-green) 72%
+  );
+  box-shadow: 0 0 20px 2px var(--green-70), 0 0 46px 6px var(--green-30);
+  animation: bb-flicker 3.4s steps(1, end) infinite;
+}
+
+/* ---------------------------------------------------------
+   Console content
+   --------------------------------------------------------- */
+
+.splash-content {
+  position: relative;
+  z-index: 2;
+  width: min(560px, 100%);
+  margin-top: 12vh;
+  text-align: center;
+  animation: bb-content-in 900ms var(--ease-out) both;
+}
+
+@keyframes bb-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.splash-presenter {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.splash-title {
+  margin-block: 14px 6px;
+  font-size: clamp(3rem, 12vw, 6.2rem);
+  letter-spacing: 0.1em;
+  line-height: 1;
+  position: relative;
+}
+
+.splash-title-base {
+  position: relative;
+  display: inline-block;
+  color: var(--color-text);
+  text-shadow: 0 0 22px var(--green-50), 0 0 60px var(--green-30);
+}
+
+/* chromatic glitch layers driven by clip-path keyframes */
+.splash-title-base::before,
+.splash-title-base::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.splash-title-base::before {
+  color: var(--color-main-green);
+  animation: bb-glitch-a 3.2s steps(2, end) infinite;
+}
+
+.splash-title-base::after {
+  color: var(--color-accent-orange);
+  animation: bb-glitch-b 3.2s steps(2, end) infinite;
+}
+
+@keyframes bb-glitch-a {
+  0%,
+  86%,
+  100% {
+    opacity: 0;
+    transform: translate(0);
+    clip-path: inset(0 0 100% 0);
+  }
+  88% {
+    opacity: 0.85;
+    transform: translate(-4px, 2px);
+    clip-path: inset(18% 0 54% 0);
+  }
+  91% {
+    opacity: 0.85;
+    transform: translate(4px, -2px);
+    clip-path: inset(62% 0 16% 0);
+  }
+  94% {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
+@keyframes bb-glitch-b {
+  0%,
+  88%,
+  100% {
+    opacity: 0;
+    transform: translate(0);
+    clip-path: inset(0 0 100% 0);
+  }
+  90% {
+    opacity: 0.6;
+    transform: translate(4px, -2px);
+    clip-path: inset(58% 0 20% 0);
+  }
+  93% {
+    opacity: 0.6;
+    transform: translate(-4px, 2px);
+    clip-path: inset(14% 0 60% 0);
+  }
+  96% {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
+.splash-tagline {
+  font-family: var(--font-heading);
+  font-size: clamp(0.86rem, 2.6vw, 1.1rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-glow-green);
+}
+
+/* ---- boot log ---- */
+
+.splash-log {
+  margin-block: 30px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.splash-log li {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  margin-inline: auto;
+  text-align: left;
+  border-right: 2px solid var(--green-50);
+  animation: bb-type 620ms steps(26, end) forwards;
+}
+
+@keyframes bb-type {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.log-tick {
+  color: var(--color-main-green);
+}
+
+/* ---- progress ---- */
+
+.splash-progress {
+  height: 4px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--green-08);
+  border: 1px solid var(--color-border);
+}
+
+.progress-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--color-main-green), var(--color-glow-green));
+  box-shadow: 0 0 8px var(--green-70);
+  animation: bb-fill var(--splash-ms, 3400ms) linear forwards;
+}
+
+@keyframes bb-fill {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.splash-meta {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.splash-percent {
+  font-family: var(--font-heading);
+  color: var(--color-main-green);
+  text-shadow: 0 0 12px var(--green-50);
+}
+
+/* ---------------------------------------------------------
+   RESPONSIVE
+   --------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .splash-content {
+    margin-top: 9vh;
+  }
+
+  .core-ring-outer {
+    width: 260px;
+    height: 260px;
+  }
+
+  .core-ring-mid {
+    width: 200px;
+    height: 200px;
+  }
+
+  .core-ring-inner {
+    width: 140px;
+    height: 140px;
+  }
+
+  .core-halo {
+    width: 320px;
+    height: 320px;
+  }
+
+  .splash-log {
+    font-size: 0.64rem;
+    letter-spacing: 0.14em;
+  }
+}

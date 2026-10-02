@@ -1,0 +1,153 @@
+/* ============================================================
+   ABOUT — Mission Brief + 4 pillars
+   ============================================================ */
+
+.about-section {
+  border-top: 1px solid var(--green-08);
+}
+
+/* ---------------------------------------------------------
+   Pillars
+   --------------------------------------------------------- */
+
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.pillar {
+  position: relative;
+  padding: 30px 24px 28px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* fading energy wash on hover */
+.pillar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(124, 255, 0, 0.16),
+    transparent 62%
+  );
+  transition: opacity var(--t-base) var(--ease-out);
+}
+
+.pillar:hover::before {
+  opacity: 1;
+}
+
+.pillar-index {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-family: var(--font-heading);
+  font-size: 2.1rem;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--green-30);
+  opacity: 0.65;
+  transition: opacity var(--t-base) var(--ease-out);
+}
+
+.pillar:hover .pillar-index {
+  opacity: 1;
+}
+
+.pillar-icon {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  color: var(--color-main-green);
+  background: var(--green-08);
+  border: 1px solid var(--green-14);
+  box-shadow: inset 0 0 16px -13px var(--green-70);
+  transition: background-color var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out);
+}
+
+.pillar:hover .pillar-icon {
+  background: var(--green-14);
+  box-shadow: 0 0 13px -6px var(--green-70);
+}
+
+.pillar-title {
+  font-size: 1.16rem;
+  letter-spacing: 0.14em;
+  color: var(--color-text);
+  transition: color var(--t-base) var(--ease-out);
+}
+
+.pillar:hover .pillar-title {
+  color: var(--color-main-green);
+  text-shadow: 0 0 18px var(--green-50);
+}
+
+.pillar-text {
+  font-size: 0.94rem;
+  line-height: 1.62;
+  color: var(--text-dim);
+}
+
+/* ---------------------------------------------------------
+   RESPONSIVE
+   --------------------------------------------------------- */
+
+@media (max-width: 1000px) {
+  .pillars-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .pillars-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pillar {
+    padding: 26px 20px 24px;
+  }
+}
+
+/* ---------------------------------------------------------
+   About — airy brand statement
+   Header sits against a left rail; pillars are nudged out of
+   line so the row reads hand-placed rather than gridded.
+   --------------------------------------------------------- */
+
+.about-section .section-header {
+  padding-left: 22px;
+  border-left: 2px solid var(--green-30);
+}
+
+.pillars-grid {
+  align-items: start;
+}
+
+.pillar:nth-child(1) { margin-top: 0; }
+.pillar:nth-child(2) { margin-top: 24px; }
+.pillar:nth-child(3) { margin-top: 10px; }
+.pillar:nth-child(4) { margin-top: 34px; }
+
+.pillar {
+  border-radius: var(--radius-lg) var(--radius-sm) var(--radius-lg)
+    var(--radius-sm);
+}
+
+/* The stagger only makes sense while the row is horizontal */
+@media (max-width: 900px) {
+  .pillar:nth-child(2),
+  .pillar:nth-child(3),
+  .pillar:nth-child(4) {
+    margin-top: 0;
+  }
+}

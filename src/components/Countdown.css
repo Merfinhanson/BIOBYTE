@@ -1,0 +1,70 @@
+/* Countdown blocks — event meta, styled like mission readouts */
+
+.countdown {
+  display: flex;
+  gap: 10px;
+}
+
+.countdown-unit {
+  display: grid;
+  gap: 2px;
+  min-width: 62px;
+  padding: 10px 12px;
+  text-align: center;
+  background: var(--green-04);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.countdown-value {
+  font-family: var(--font-mono);
+  font-size: 1.32rem;
+  line-height: 1;
+  color: var(--color-main-green);
+}
+
+.countdown-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.countdown-pending {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 11px 14px;
+  background: var(--orange-14);
+  border: 1px solid var(--orange-40);
+  border-radius: var(--radius-sm);
+}
+
+.countdown-pending-key {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.countdown-pending-value {
+  font-family: var(--font-heading);
+  font-size: 1.12rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent-orange);
+}
+
+@media (max-width: 560px) {
+  .countdown {
+    gap: 7px;
+  }
+
+  .countdown-unit {
+    min-width: 0;
+    flex: 1;
+    padding: 9px 6px;
+  }
+}
