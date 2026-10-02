@@ -11,8 +11,8 @@
 .pod-grid {
   display: grid;
   gap: 20px;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  max-width: 980px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  max-width: 1480px;
   margin-inline: auto;
 }
 
@@ -64,7 +64,7 @@
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 24px 20px 18px;
+  padding: clamp(30px, 2.6vw, 42px) clamp(24px, 2.2vw, 34px) clamp(24px, 2vw, 30px);
   overflow: hidden;
   font: inherit;
   color: inherit;
@@ -86,8 +86,8 @@
 .pod-art {
   position: relative;
   display: block;
-  width: 128px;
-  height: 132px;
+  width: 156px;
+  height: 160px;
   color: var(--hue);
   /* `transform` is owned by the drift animation, so the hover lift uses the
      independent `translate` property - otherwise the animation wins and the
@@ -112,8 +112,8 @@
 
 .pod-lid {
   top: 4px;
-  width: 104px;
-  height: 30px;
+  width: 126px;
+  height: 34px;
   background: linear-gradient(
     180deg,
     color-mix(in srgb, var(--hue) 40%, var(--color-card-dark)),
@@ -140,8 +140,8 @@
 
 .pod-body {
   top: 32px;
-  width: 96px;
-  height: 74px;
+  width: 116px;
+  height: 88px;
   display: grid;
   place-items: center;
   color: var(--hue);
@@ -166,8 +166,8 @@
   position: absolute;
   top: 6px;
   left: 50%;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   margin-left: -20px;
   opacity: 0.55;
 }
@@ -189,8 +189,8 @@
 
 .pod-base {
   bottom: 4px;
-  width: 112px;
-  height: 12px;
+  width: 134px;
+  height: 14px;
   background: linear-gradient(
     180deg,
     color-mix(in srgb, var(--hue) 26%, var(--color-card-dark)),
@@ -214,7 +214,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.7rem;
+  font-size: 0.82rem;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;

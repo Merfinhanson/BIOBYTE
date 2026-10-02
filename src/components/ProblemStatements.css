@@ -31,7 +31,7 @@
   position: relative;
   display: grid;
   gap: 20px;
-  grid-template-columns: repeat(auto-fit, minmax(288px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(258px, 1fr));
 }
 
 .mission-reveal {
@@ -45,8 +45,8 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 14px;
-  padding: 22px 20px 20px;
+  gap: 16px;
+  padding: clamp(26px, 2.2vw, 36px) clamp(24px, 2vw, 32px) clamp(24px, 2vw, 30px);
   overflow: hidden;
   background: linear-gradient(
     175deg,
@@ -177,7 +177,7 @@
 }
 
 .mission-code {
-  font-size: 0.72rem;
+  font-size: 0.85rem;
   font-weight: 600;
   letter-spacing: 0.14em;
   color: var(--text-faint);
@@ -185,7 +185,7 @@
 
 .mission-alien {
   padding: 3px 10px;
-  font-size: 0.68rem;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -197,7 +197,7 @@
 
 .mission-clearance {
   margin-left: auto;
-  font-size: 0.66rem;
+  font-size: 0.88rem;
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -284,7 +284,7 @@
 
 .tag-chip {
   padding: 5px 11px;
-  font-size: 0.68rem;
+  font-size: 0.8rem;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;

@@ -14,7 +14,7 @@
 }
 
 .command-block {
-  padding: 28px 26px;
+  padding: clamp(32px, 3vw, 48px) clamp(28px, 2.6vw, 42px);
   background: linear-gradient(165deg, #10190a, #0b1108);
   border: 1px solid var(--green-08);
   border-radius: var(--radius-md);
@@ -33,9 +33,9 @@
 .command-badge {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
-  padding: 7px 14px;
-  font-size: 0.68rem;
+  gap: 10px;
+  padding: 9px 18px;
+  font-size: 0.92rem;
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -52,7 +52,7 @@
 }
 
 .command-title {
-  font-size: 1.28rem;
+  font-size: clamp(1.6rem, 1.9vw, 2.05rem);
   letter-spacing: 0.14em;
   color: var(--color-text);
 }
@@ -63,16 +63,16 @@
 
 .people-grid {
   display: grid;
-  gap: 14px;
+  gap: clamp(16px, 1.5vw, 22px);
 }
 
 .person {
   position: relative;
-  padding: 20px 22px;
+  padding: clamp(22px, 2vw, 32px) clamp(24px, 2.2vw, 34px);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 11px;
 }
 
 .person::before {
@@ -96,15 +96,15 @@
 .person-role {
   position: relative;
   font-family: var(--font-heading);
-  font-size: 0.7rem;
-  letter-spacing: 0.26em;
+  font-size: 0.95rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--color-main-green);
 }
 
 .person-name {
   position: relative;
-  font-size: 1.06rem;
+  font-size: clamp(1.3rem, 1.5vw, 1.56rem);
   letter-spacing: 0.03em;
   text-transform: none;
   color: var(--color-text);
@@ -116,9 +116,9 @@
   align-items: center;
   gap: 9px;
   align-self: flex-start;
-  margin-top: 2px;
-  padding: 7px 13px;
-  font-size: 0.86rem;
+  margin-top: 4px;
+  padding: 9px 16px;
+  font-size: 0.98rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--color-glow-green);
@@ -140,11 +140,11 @@
    --------------------------------------------------------- */
 
 .command-note {
-  margin-top: 28px;
+  margin-top: 34px;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  font-size: 0.76rem;
+  gap: 12px;
+  font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -166,7 +166,7 @@
   }
 
   .command-block {
-    padding: 24px 20px;
+    padding: clamp(24px, 5vw, 34px) clamp(20px, 4vw, 28px);
   }
 }
 
@@ -178,7 +178,7 @@
 
 .command-grid {
   grid-template-columns: 1.14fr 1fr;
-  gap: clamp(20px, 2.6vw, 32px);
+  gap: clamp(24px, 2.8vw, 44px);
   align-items: start;
 }
 

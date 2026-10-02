@@ -12,7 +12,7 @@
 
 .terminal {
   position: relative;
-  max-width: 980px;
+  max-width: 1240px;
   margin-inline: auto;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);

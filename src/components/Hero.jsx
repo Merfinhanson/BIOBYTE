@@ -80,12 +80,12 @@ const Hero = () => {
               pointerStrength={0.34}
               refraction={0.016}
               ripple
-              fontSize={116}
+              fontSize={152}
               fontWeight={400}
               fontFamily="'Russo One', Impact, sans-serif"
               letterSpacing="0.02em"
               lineHeight={0.9}
-              style={{ height: "clamp(170px, 27vw, 300px)" }}
+              style={{ height: "clamp(230px, 36vw, 430px)" }}
             />
           </h1>
         </div>

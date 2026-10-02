@@ -9,7 +9,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-block: clamp(48px, 6vw, 76px) clamp(92px, 10vw, 124px);
+  padding-block: clamp(64px, 7vw, 108px) clamp(120px, 12vw, 170px);
   overflow: hidden;
 }
 
@@ -106,11 +106,11 @@
 .hero-presenter {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 16px;
-  font-size: 0.72rem;
+  gap: 12px;
+  padding: 11px 22px;
+  font-size: 0.92rem;
   font-weight: 700;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--color-glow-green);
   background: var(--green-08);
@@ -144,7 +144,7 @@
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 940px;
+  max-width: 1400px;
   line-height: 1;
   letter-spacing: 0;
 }
@@ -153,7 +153,7 @@
   position: absolute;
   left: 52%;
   top: 50%;
-  width: min(92%, 440px);
+  width: min(88%, 660px);
   aspect-ratio: 1;
   transform: translate(-50%, -50%);
   display: grid;
@@ -229,10 +229,11 @@
 .hero-tagline {
   position: relative;
   z-index: 2;
-  margin-top: clamp(6px, 1.4vw, 14px);
+  margin-top: clamp(10px, 1.8vw, 22px);
   font-family: var(--font-heading);
-  font-size: clamp(1.02rem, 3.1vw, 1.62rem);
-  letter-spacing: 0.13em;
+  font-size: clamp(1.38rem, 3.7vw, 2.7rem);
+  line-height: 1.12;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-glow-green);
 }
@@ -243,41 +244,44 @@
 }
 
 .hero-blurb {
-  margin-top: 18px;
-  max-width: 60ch;
-  font-size: 1.06rem;
+  margin-top: 26px;
+  max-width: 66ch;
+  font-size: clamp(1.06rem, 1.5vw, 1.34rem);
+  line-height: 1.68;
   color: var(--text-dim);
 }
 
 .hero-actions {
-  margin-top: 32px;
+  margin-top: 48px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 14px;
+  gap: 20px;
 }
 
 /* ---------------------------------------------------------
-   Info chips
+   Info chips — four across on desktop so the hero reads as a
+   full event banner rather than a small cluster
    --------------------------------------------------------- */
 
 .hero-chips {
-  margin-top: 38px;
+  margin-top: clamp(40px, 4.5vw, 64px);
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
   width: 100%;
-  max-width: 640px;
+  max-width: 1320px;
 }
 
 .hero-chip {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 13px 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 24px 26px;
   background: linear-gradient(150deg, rgba(15, 26, 8, 0.9), rgba(7, 10, 5, 0.6));
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   color: var(--color-main-green);
   text-align: left;
   transition: transform var(--t-base) var(--ease-out),
@@ -286,13 +290,14 @@
 }
 
 .hero-chip:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px);
   border-color: var(--green-50);
-  box-shadow: 0 0 13px -6px var(--green-50);
+  box-shadow: 0 0 20px -8px var(--green-50);
 }
 
 .chip-label {
-  font-size: 0.66rem;
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -300,11 +305,13 @@
 }
 
 .chip-value {
-  margin-left: auto;
-  font-size: 0.88rem;
-  font-weight: 700;
+  font-family: var(--font-heading);
+  font-size: clamp(1.02rem, 1.3vw, 1.24rem);
+  font-weight: 400;
+  line-height: 1.28;
+  letter-spacing: 0.03em;
   color: var(--color-text);
-  text-align: right;
+  text-align: left;
 }
 
 /* ---------------------------------------------------------
@@ -368,7 +375,7 @@
 }
 
 .hero-scroll-label {
-  font-size: 0.62rem;
+  font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.28em;
   text-transform: uppercase;
@@ -378,21 +385,23 @@
    RESPONSIVE
    --------------------------------------------------------- */
 
-@media (max-width: 1000px) {
+@media (max-width: 1200px) {
   .hero-omnitrix {
-    width: min(98%, 400px);
+    width: min(94%, 520px);
   }
+}
 
-  .hero-actions,
+@media (max-width: 1000px) {
   .hero-chips {
-    justify-content: center;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 720px;
   }
 }
 
 @media (max-width: 560px) {
   .hero-chips {
     grid-template-columns: 1fr;
-    max-width: 380px;
+    max-width: 420px;
   }
 
   .hero-actions .btn {
@@ -400,12 +409,12 @@
   }
 
   .hero-presenter {
-    font-size: 0.62rem;
+    font-size: 0.72rem;
     letter-spacing: 0.2em;
   }
 
   .hero-section {
     min-height: auto;
-    padding-top: 48px;
+    padding-top: 56px;
   }
 }

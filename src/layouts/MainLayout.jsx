@@ -3,6 +3,7 @@ import { Zap } from "lucide-react";
 import Footer from "../components/Footer";
 import { openRegisterGate } from "../utils/registerGate";
 import { scrollToSection } from "../utils/scroll";
+import useScrollMood from "../utils/useScrollMood";
 import "./MainLayout.css";
 
 const NAV_ITEMS = [
@@ -16,6 +17,8 @@ const NAV_ITEMS = [
 ];
 
 const MainLayout = ({ children }) => {
+  /* Background tone drifts with scroll position. */
+  useScrollMood();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeId, setActiveId] = useState("");

@@ -8,8 +8,8 @@
 
 .protocol-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
-  gap: clamp(22px, 3vw, 38px);
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+  gap: clamp(26px, 3.2vw, 48px);
   align-items: start;
 }
 
@@ -18,7 +18,7 @@
    --------------------------------------------------------- */
 
 .rules-panel {
-  padding: 28px 26px;
+  padding: clamp(28px, 3vw, 44px) clamp(26px, 2.8vw, 40px);
   overflow: hidden;
   box-shadow: 0 0 0 1px var(--green-08), 0 24px 60px -44px rgba(0, 0, 0, 0.9);
 }
@@ -26,15 +26,15 @@
 .rules-head {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
+  gap: 16px;
+  margin-bottom: 26px;
+  padding-bottom: 20px;
   border-bottom: 1px solid var(--color-border);
 }
 
 .rules-icon {
-  width: 42px;
-  height: 42px;
+  width: 54px;
+  height: 54px;
   flex-shrink: 0;
   display: grid;
   place-items: center;
@@ -46,22 +46,22 @@
 }
 
 .rules-title {
-  font-size: 1.12rem;
-  letter-spacing: 0.12em;
+  font-size: 1.5rem;
+  letter-spacing: 0.11em;
   color: var(--color-text);
 }
 
 .rules-list {
   display: grid;
-  gap: 10px;
+  gap: 14px;
 }
 
 .rule-item {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 13px;
-  padding: 13px 15px;
+  gap: 17px;
+  padding: clamp(16px, 1.5vw, 22px) clamp(18px, 1.7vw, 24px);
   background: #0c120a;
   border: 1px solid var(--green-08);
   border-left: 2px solid var(--color-border);
@@ -85,9 +85,9 @@
 }
 
 .rule-text {
-  font-size: 0.95rem;
+  font-size: clamp(1rem, 1.05vw, 1.14rem);
   font-weight: 600;
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--text-dim);
 }
 
@@ -95,8 +95,8 @@
   margin-left: auto;
   flex-shrink: 0;
   font-family: var(--font-heading);
-  font-size: 0.78rem;
-  letter-spacing: 0.1em;
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
   color: transparent;
   -webkit-text-stroke: 1px var(--green-30);
 }
@@ -106,8 +106,8 @@
    --------------------------------------------------------- */
 
 .flow-title {
-  margin-bottom: 20px;
-  font-size: 1.12rem;
+  margin-bottom: 26px;
+  font-size: 1.5rem;
   letter-spacing: 0.12em;
   color: var(--color-text);
 }
@@ -115,7 +115,7 @@
 .flow-list {
   position: relative;
   display: grid;
-  gap: 16px;
+  gap: clamp(20px, 2vw, 30px);
 }
 
 .flow-step {
@@ -123,16 +123,16 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: 16px;
+  gap: clamp(20px, 2vw, 30px);
 }
 
 /* connector between nodes */
 .flow-link {
   position: absolute;
-  left: 25px;
-  top: calc(100% + 16px);
+  left: 31px;
+  top: calc(100% + 20px);
   width: 2px;
-  height: 16px;
+  height: clamp(20px, 2vw, 30px);
   background: linear-gradient(180deg, var(--green-50), transparent);
   box-shadow: 0 0 10px var(--green-30);
 }
@@ -140,8 +140,8 @@
 .flow-node {
   position: relative;
   z-index: 2;
-  width: 52px;
-  height: 52px;
+  width: 64px;
+  height: 64px;
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -149,9 +149,9 @@
   background: var(--color-card-dark);
   border: 2px solid var(--color-border);
   font-family: var(--font-heading);
-  font-size: 0.92rem;
-  letter-spacing: 0.06em;
-  box-shadow: 0 0 0 6px var(--color-bg);
+  font-size: 1.18rem;
+  letter-spacing: 0.04em;
+  box-shadow: 0 0 0 6px var(--page-bg, var(--color-bg));
   transition: border-color var(--t-base) var(--ease-out),
     box-shadow var(--t-base) var(--ease-out),
     color var(--t-base) var(--ease-out);
@@ -159,12 +159,12 @@
 
 .flow-step:hover .flow-node {
   border-color: var(--color-main-green);
-  box-shadow: 0 0 0 5px var(--color-bg), 0 0 0 1px var(--green-30);
+  box-shadow: 0 0 0 5px var(--page-bg, var(--color-bg)), 0 0 0 1px var(--green-30);
   color: var(--color-glow-green);
 }
 
 .flow-body {
-  padding: 16px 20px;
+  padding: clamp(20px, 2vw, 30px) clamp(22px, 2.2vw, 32px);
   transition: border-color var(--t-base) var(--ease-out),
     box-shadow var(--t-base) var(--ease-out);
 }
@@ -175,15 +175,15 @@
 }
 
 .flow-step-title {
-  font-size: 1rem;
-  letter-spacing: 0.1em;
+  font-size: clamp(1.16rem, 1.3vw, 1.42rem);
+  letter-spacing: 0.08em;
   color: var(--color-glow-green);
-  margin-bottom: 4px;
+  margin-bottom: 7px;
 }
 
 .flow-text {
-  font-size: 0.9rem;
-  line-height: 1.55;
+  font-size: clamp(1rem, 1.05vw, 1.14rem);
+  line-height: 1.62;
   color: var(--text-dim);
 }
 
