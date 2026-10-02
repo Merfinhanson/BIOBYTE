@@ -1,0 +1,50 @@
+/* ============================================================
+   MOTION SYSTEM — shared entrance vocabulary
+   GSAP owns opacity/transform/filter on these elements, so the
+   rules below only supply optional resting treatment.
+   ============================================================ */
+
+/* .reveal is the hook every animated wrapper carries.
+   No hidden state here on purpose: GSAP sets the "from" frame in
+   useLayoutEffect before paint, which avoids a flash and lets the
+   animation clean up after itself without fighting CSS. */
+.reveal {
+  will-change: opacity, transform, filter;
+}
+
+.bio-reveal-base {
+  will-change: opacity, transform, filter;
+}
+
+.bio-reveal-card {
+  position: relative;
+  will-change: opacity, transform, filter;
+}
+
+/* Section headers get a slower arrival than individual cards so the
+   page reads top-down instead of everything popping at once. */
+.bio-section-enter {
+  will-change: opacity, transform, filter;
+}
+
+.bio-section-enter.bio-section-lead {
+  transition-delay: 120ms;
+}
+
+/* Once GSAP has finished, drop the compositing hint so long pages
+   do not keep dozens of promoted layers alive. */
+.reveal.is-settled {
+  will-change: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .bio-reveal-base,
+  .bio-reveal-card,
+  .bio-section-enter {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    will-change: auto;
+  }
+}

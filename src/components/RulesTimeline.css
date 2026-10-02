@@ -105,11 +105,36 @@
    Mission flow
    --------------------------------------------------------- */
 
+.flow {
+  position: relative;
+}
+
 .flow-title {
   margin-bottom: 26px;
   font-size: 1.5rem;
   letter-spacing: 0.12em;
   color: var(--color-text);
+}
+
+/* Scroll-linked spine. Top/height are measured from the first and last
+   node centres at runtime, so it stays aligned at any card height. */
+.flow-track {
+  position: absolute;
+  left: 31px;
+  z-index: 0;
+  width: 2px;
+  background: var(--green-08);
+  border-radius: 2px;
+}
+
+.flow-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scaleY(0);
+  background: linear-gradient(180deg, var(--color-main-green), var(--color-glow-green));
+  box-shadow: 0 0 12px var(--green-50), 0 0 26px rgba(124, 255, 0, 0.35);
+  border-radius: 2px;
 }
 
 .flow-list {
@@ -163,6 +188,49 @@
   color: var(--color-glow-green);
 }
 
+/* ---- scroll states ---- */
+
+.flow-step .flow-node {
+  transition: border-color 420ms var(--ease-out), color 420ms var(--ease-out),
+    background-color 420ms var(--ease-out), box-shadow 420ms var(--ease-out);
+}
+
+/* passed: locked in */
+.flow-step.is-complete .flow-node {
+  color: #06120a;
+  background: var(--color-main-green);
+  border-color: var(--color-glow-green);
+  box-shadow: 0 0 0 5px var(--page-bg, var(--color-bg)), 0 0 0 1px var(--green-30),
+    0 0 22px -4px var(--green-50);
+}
+
+/* current: pulsing halo */
+.flow-step.is-active .flow-node {
+  color: var(--color-glow-green);
+  border-color: var(--color-main-green);
+  background: var(--green-14);
+  box-shadow: 0 0 0 5px var(--page-bg, var(--color-bg)), 0 0 0 1px var(--green-30),
+    0 0 34px -4px var(--color-main-green);
+  animation: flow-pulse 1.9s ease-in-out infinite;
+}
+
+.flow-step.is-active .flow-body {
+  border-color: var(--green-50);
+  box-shadow: 0 0 26px -12px var(--green-50), inset 0 0 40px -30px var(--color-main-green);
+}
+
+@keyframes flow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 5px var(--page-bg, var(--color-bg)), 0 0 0 1px var(--green-30),
+      0 0 22px -6px var(--color-main-green);
+  }
+  50% {
+    box-shadow: 0 0 0 5px var(--page-bg, var(--color-bg)), 0 0 0 1px var(--green-30),
+      0 0 46px -2px var(--color-main-green);
+  }
+}
+
 .flow-body {
   padding: clamp(20px, 2vw, 30px) clamp(22px, 2.2vw, 32px);
   transition: border-color var(--t-base) var(--ease-out),
@@ -213,6 +281,10 @@
     font-size: 0.8rem;
   }
 
+  .flow-track {
+    left: 21px;
+  }
+
   .flow-link {
     left: 21px;
   }
@@ -247,5 +319,26 @@
   .flow-step:nth-child(2),
   .flow-step:nth-child(4) {
     margin-top: 0;
+  }
+}
+
+/* ---------------------------------------------------------
+   Reduced motion — no scrubbing, no pulsing. The spine is simply
+   shown fully lit so nothing reads as unfinished.
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-fill {
+    transform: scaleY(1);
+  }
+
+  .flow-step .flow-node {
+    animation: none;
+  }
+
+  .flow-step .flow-body {
+    opacity: 1;
+    transform: none;
+    filter: none;
   }
 }

@@ -515,15 +515,11 @@ ol {
    SCROLL REVEAL — subtle, varied by distance
    ============================================================ */
 
+/* Hook class only. The entrance itself is owned by Reveal.jsx (GSAP +
+   ScrollTrigger), which sets the "from" frame before paint and clears
+   its inline styles on completion — so no hidden state is declared here. */
 .reveal {
-  opacity: 0;
-  transform: translateY(26px);
-  transition: opacity 760ms var(--ease-out), transform 760ms var(--ease-out);
-}
-
-.reveal.is-revealed {
-  opacity: 1;
-  transform: translateY(0);
+  will-change: opacity, transform, filter;
 }
 
 /* ============================================================

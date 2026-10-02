@@ -1,40 +1,16 @@
-import React, { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import React from "react";
+import Reveal from "./Reveal";
 
-gsap.registerPlugin(ScrollTrigger);
-
-const CardReveal = ({ children, className = '', as: Component = 'div', ...props }) => {
-  const elRef = useRef(null);
-
-  useEffect(() => {
-    const el = elRef.current;
-    if (!el) return;
-
-    gsap.fromTo(
-      el,
-      { opacity: 0, y: 40, filter: 'blur(8px)', rotateX: 5 },
-      {
-        opacity: 1,
-        y: 0,
-        filter: 'blur(0px)',
-        rotateX: 0,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: el,
-          start: 'top bottom',
-          end: 'top center',
-          scrub: 1,
-        }
-      }
-    );
-  }, []);
-
-  return (
-    <Component ref={elRef} className={`card-reveal ${className}`} {...props}>
-      {children}
-    </Component>
-  );
-};
+/**
+ * Card-sized reveal. Thin wrapper over Reveal so every entrance on the
+ * site shares one animation, one cleanup path and one reduced-motion
+ * guard. Previously this ran its own gsap.fromTo with no revert,
+ * which leaked a ScrollTrigger for every card ever mounted.
+ */
+const CardReveal = ({ children, className = "", as: Component = "div", ...props }) => (
+  <Reveal as={Component} className={`card-reveal ${className}`.trim()} y={40} blur={8} {...props}>
+    {children}
+  </Reveal>
+);
 
 export default CardReveal;
