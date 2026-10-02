@@ -10,6 +10,9 @@ import { getStorage } from "firebase/storage";
  * Set them in `.env.local` for local dev and in the Vercel dashboard for
  * production. These are public client identifiers (they ship in the bundle
  * by design) — the real protections are Firebase Auth + Firestore rules.
+ *
+ * Note: Vite inlines import.meta.env values at BUILD time. Adding these to
+ * Vercel after a build does nothing until you redeploy without the cache.
  */
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -21,14 +24,24 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-const missing = Object.entries(firebaseConfig)
-  .filter(([, value]) => !value)
-  .map(([key]) => key);
+/* Only what this app actually calls is fatal. Analytics identifiers are
+   optional, so leaving one out must not take registration offline. */
+const REQUIRED_KEYS = [
+  "apiKey",
+  "authDomain",
+  "projectId",
+  "storageBucket",
+  "appId",
+];
+
+const missing = REQUIRED_KEYS.filter((key) => !firebaseConfig[key]);
 
 if (missing.length) {
   throw new Error(
     `Missing Firebase environment variables: ${missing.join(", ")}. ` +
-      "Copy .env.example to .env.local and fill them in.",
+      "For local dev copy .env.example to .env.local; for production set them " +
+      "in Vercel → Project → Settings → Environment Variables, then redeploy " +
+      "with the build cache disabled so Vite can inline them.",
   );
 }
 
