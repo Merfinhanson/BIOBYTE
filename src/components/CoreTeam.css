@@ -294,6 +294,17 @@
   }
 }
 
+@media (max-width: 480px) {
+  .crew-grid {
+    max-width: none;
+  }
+
+  .crew-card {
+    gap: 14px;
+    padding: clamp(20px, 5vw, 24px) clamp(18px, 5vw, 22px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .crew-card,
   .crew-avatar,

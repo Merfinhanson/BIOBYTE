@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 import CardReveal from "./CardReveal";
-import { prefersReducedMotion } from "../utils/motion";
+import { prefersReducedMotion, isCompactViewport } from "../utils/motion";
 import { PROTOCOL, RULES } from "../data/site";
 import "./RulesTimeline.css";
 
@@ -90,9 +90,14 @@ const RulesTimeline = () => {
         /* Scroll-linked card arrival: blurred and low, resolving as the
            step reaches the middle of the viewport. */
         if (card) {
+          const compact = isCompactViewport();
+          const cardY = compact ? 18 : 34;
+          const cardBlur = compact ? 3 : 7;
+          const cardScrub = compact ? 0.3 : 0.5;
+
           gsap.fromTo(
             card,
-            { opacity: 0, y: 34, filter: "blur(7px)" },
+            { opacity: 0, y: cardY, filter: `blur(${cardBlur}px)` },
             {
               opacity: 1,
               y: 0,
@@ -102,7 +107,7 @@ const RulesTimeline = () => {
                 trigger: step,
                 start: "top bottom",
                 end: "top 58%",
-                scrub: 0.5,
+                scrub: cardScrub,
               },
               onComplete: () => gsap.set(card, { clearProps: "filter,transform,opacity" }),
             },

@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ITEM_SELECTOR, prefersReducedMotion } from "../utils/motion";
+import { ITEM_SELECTOR, prefersReducedMotion, isCompactViewport } from "../utils/motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -36,17 +36,23 @@ const Reveal = ({
     const items = el.querySelectorAll(ITEM_SELECTOR);
     const targets = items.length ? items : [el];
 
+    const compact = isCompactViewport();
+    const effY = compact ? Math.min(y, 14) : y;
+    const effBlur = compact ? Math.min(blur, 3) : blur;
+    const effDuration = compact ? Math.min(duration, 0.6) : duration;
+    const effStagger = compact ? Math.min(stagger, 0.06) : stagger;
+
     const ctx = gsap.context(() => {
-      gsap.set(targets, { opacity: 0, y, filter: `blur(${blur}px)` });
+      gsap.set(targets, { opacity: 0, y: effY, filter: `blur(${effBlur}px)` });
 
       gsap.to(targets, {
         opacity: 1,
         y: 0,
         filter: "blur(0px)",
-        duration,
+        duration: effDuration,
         delay: delay / 1000,
         ease: "power3.out",
-        stagger: items.length ? stagger : 0,
+        stagger: items.length ? effStagger : 0,
         scrollTrigger: {
           trigger: el,
           start,
