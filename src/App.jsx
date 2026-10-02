@@ -10,6 +10,7 @@ import FAQs from "./components/FAQs";
 import CoreTeam from "./components/CoreTeam";
 import Ticker from "./components/Ticker";
 import Contact from "./components/Contact";
+import ErrorBoundary from "./components/ErrorBoundary";
 import MainLayout from "./layouts/MainLayout";
 import { SPLASH_EXIT_MS, SPLASH_MS } from "./data/site";
 import "./components/Registration.css";
@@ -90,9 +91,14 @@ function App() {
         <FeaturedMission />
         <About />
         <ProblemStatements />
-        <Suspense fallback={<RegistrationFallback />}>
-          <Registration />
-        </Suspense>
+
+        {/* Registration is the only Firebase-dependent section, so it is the
+            only one allowed to fail without taking the page down with it. */}
+        <ErrorBoundary label="Registration" onRetry={() => window.location.reload()}>
+          <Suspense fallback={<RegistrationFallback />}>
+            <Registration />
+          </Suspense>
+        </ErrorBoundary>
         <RulesTimeline />
         <Prizes />
         <FAQs />

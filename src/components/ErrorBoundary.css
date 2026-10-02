@@ -1,0 +1,116 @@
+/* ============================================================
+   ERROR BOUNDARY — degraded-mode panel
+   Self-contained so it never depends on Registration.css loading.
+   ============================================================ */
+
+.bb-boundary {
+  padding: clamp(60px, 8vw, 120px) clamp(20px, 4vw, 60px);
+}
+
+.bb-boundary-panel {
+  max-width: 900px;
+  margin-inline: auto;
+  border: 1px solid var(--green-14);
+  border-left: 2px solid var(--color-main-green);
+  border-radius: var(--radius-sm);
+  background: #0c120a;
+  box-shadow: 0 0 0 1px var(--green-08), 0 24px 60px -44px rgba(0, 0, 0, 0.9);
+  overflow: hidden;
+}
+
+.bb-boundary-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--color-border);
+  background: #0a1008;
+}
+
+.bb-boundary-dots {
+  display: inline-flex;
+  gap: 7px;
+}
+
+.bb-boundary-dots i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--green-14);
+}
+
+.bb-boundary-title {
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  letter-spacing: 0.14em;
+  color: var(--color-text);
+}
+
+.bb-boundary-status {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  color: var(--color-accent-orange, #ff7a00);
+}
+
+.bb-boundary-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.bb-boundary-body {
+  display: grid;
+  gap: 16px;
+  padding: clamp(22px, 2.6vw, 34px);
+}
+
+.bb-boundary-log {
+  font-family: var(--font-mono);
+  font-size: clamp(1rem, 1.3vw, 1.2rem);
+  color: var(--color-glow-green);
+}
+
+.bb-boundary-log span {
+  color: var(--color-main-green);
+}
+
+.bb-boundary-detail {
+  font-family: var(--font-mono);
+  font-size: clamp(0.9rem, 1.05vw, 1.02rem);
+  line-height: 1.6;
+  color: #ffb37a;
+  word-break: break-word;
+}
+
+.bb-boundary-hint {
+  font-size: clamp(0.98rem, 1.05vw, 1.08rem);
+  line-height: 1.62;
+  color: var(--text-dim);
+}
+
+.bb-boundary-retry {
+  justify-self: start;
+  margin-top: 6px;
+  padding: 13px 26px;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  color: var(--color-bg);
+  background: var(--color-main-green);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform var(--t-base) var(--ease-out), box-shadow var(--t-base) var(--ease-out);
+}
+
+.bb-boundary-retry:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 26px -8px var(--color-main-green);
+}
