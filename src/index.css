@@ -135,6 +135,42 @@ img,
 svg {
   display: block;
   max-width: 100%;
+  height: auto;
+}
+
+/* Mobile typography & spacing baseline */
+@media (max-width: 768px) {
+  :root {
+    --container-px: clamp(18px, 5vw, 22px);
+  }
+
+  body {
+    font-size: clamp(1.05rem, 3.2vw, 1.12rem);
+    line-height: 1.62;
+  }
+
+  p {
+    line-height: 1.7;
+  }
+
+  h1 {
+    font-size: clamp(2.6rem, 9vw, 3.2rem);
+  }
+
+  h2 {
+    font-size: clamp(1.8rem, 6.5vw, 2.25rem);
+  }
+
+  h3 {
+    font-size: clamp(1.25rem, 5vw, 1.5rem);
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: clamp(1.02rem, 4vw, 1.08rem);
+    line-height: 1.64;
+  }
 }
 
 ul,
@@ -196,6 +232,12 @@ ol {
   padding-inline: clamp(20px, 3.2vw, 48px);
 }
 
+@media (max-width: 768px) {
+  .container {
+    padding-inline: var(--container-px, clamp(18px, 5vw, 22px));
+  }
+}
+
 /* Opt-in narrower measure for long-form / form surfaces */
 .container--narrow {
   max-width: var(--container-narrow);
@@ -209,6 +251,16 @@ ol {
 /* Human rhythm: not every section gets the same block of air */
 .section--tight {
   padding-block: clamp(76px, 8vw, 120px);
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding-block: clamp(64px, 14vw, 92px);
+  }
+
+  .section--tight {
+    padding-block: clamp(56px, 12vw, 80px);
+  }
 }
 
 .section--airy {

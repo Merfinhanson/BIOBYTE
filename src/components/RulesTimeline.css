@@ -285,12 +285,8 @@
     left: 21px;
   }
 
-  .flow-link {
-    left: 21px;
-  }
-
-  .flow-body {
-    padding: 14px 16px;
+   .flow-body {
+    padding: clamp(16px, 4vw, 20px) clamp(16px, 4vw, 20px);
   }
 }
 
@@ -319,6 +315,10 @@
   .flow-step:nth-child(2),
   .flow-step:nth-child(4) {
     margin-top: 0;
+  }
+
+  .flow-body {
+    padding: clamp(16px, 4vw, 20px) clamp(16px, 4vw, 20px);
   }
 }
 

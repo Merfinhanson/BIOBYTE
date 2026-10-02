@@ -13,13 +13,14 @@
   background: rgba(4, 6, 3, 0.86);
   backdrop-filter: blur(6px);
   animation: overlay-in 260ms var(--ease-out);
+  overflow: hidden auto;
 }
 
 .mission-file {
   --hue: var(--color-main-green);
   position: relative;
-  width: min(680px, 100%);
-  max-height: min(86vh, 760px);
+  width: min(680px, 96vw);
+  max-height: min(92vh, 760px);
   overflow: hidden auto;
   padding: clamp(20px, 3.4vw, 30px);
   background: linear-gradient(
@@ -31,6 +32,13 @@
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg), 0 0 60px -22px var(--hue);
   animation: file-in 420ms var(--ease-out);
+}
+
+@media (max-width: 768px) {
+  .mission-file {
+    width: min(96vw, 680px);
+    padding: clamp(18px, 5vw, 24px);
+  }
 }
 
 .file-scan {

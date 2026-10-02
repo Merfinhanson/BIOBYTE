@@ -13,6 +13,14 @@
   overflow: hidden;
 }
 
+@media (max-width: 768px) {
+  .hero-section {
+    min-height: calc(100svh - var(--nav-height));
+    padding-block: clamp(88px, 18vw, 110px) clamp(56px, 12vw, 80px);
+    justify-content: flex-start;
+  }
+}
+
 /* ---------------------------------------------------------
    Ambient layers
    --------------------------------------------------------- */
@@ -162,6 +170,14 @@
   z-index: 1;
 }
 
+@media (max-width: 768px) {
+  .hero-omnitrix {
+    left: 50%;
+    width: min(84%, 420px);
+    opacity: 0.98;
+  }
+}
+
 .omni-glow {
   position: absolute;
   inset: -30%;
@@ -251,12 +267,34 @@
   color: var(--text-dim);
 }
 
+@media (max-width: 768px) {
+  .hero-blurb {
+    margin-top: 20px;
+    font-size: clamp(1.04rem, 3.6vw, 1.14rem);
+    line-height: 1.72;
+  }
+}
+
 .hero-actions {
   margin-top: 48px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 20px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    margin-top: clamp(36px, 8vw, 44px);
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+  }
 }
 
 /* ---------------------------------------------------------
@@ -271,6 +309,20 @@
   gap: 18px;
   width: 100%;
   max-width: 1320px;
+}
+
+@media (max-width: 1080px) {
+  .hero-chips {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-chips {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: clamp(32px, 7vw, 44px);
+  }
 }
 
 .hero-chip {
